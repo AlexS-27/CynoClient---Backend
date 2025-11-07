@@ -31,7 +31,6 @@ const db = {
         } finally {
             if (con) {await db.disconnectFromDatabase(con); }
         }
-
     },
 
     getAllServices: async (limit) => {
@@ -52,7 +51,6 @@ const db = {
         } finally {
             if (con) {await db.disconnectFromDatabase(con); }
         }
-
     },
 
     getAllDogs: async (limit) => {
@@ -73,7 +71,6 @@ const db = {
         } finally {
             if (con) {await db.disconnectFromDatabase(con); }
         }
-
     },
 
     getAllClients: async (limit) => {
@@ -94,7 +91,6 @@ const db = {
         } finally {
             if (con) {await db.disconnectFromDatabase(con); }
         }
-
     },
 
     getLocalityById: async ( id) => {
