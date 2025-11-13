@@ -4,13 +4,21 @@ import mysql from 'mysql2/promise';
 const db = {
 
     connectToDB: async () => {
-        return await mysql.createConnection({
-            host: "localhost",
-            user: "root",
-            password: "root",
-            port: 3306,
-            database: "", //database name
-        });
+        try {
+            const connection = await mysql.createConnection({
+                host: "localhost",
+                user: "root",
+                password: "",
+                port: 3306,
+                database: "cyno_client", //database name
+            });
+            console.log("Connected to DB");
+            return connection;
+        } catch (error) {
+            console.error("Error connexion DataBase", error);
+            throw error;
+        }
+
     },
 
     getAllLocalities: async (limit) => {
@@ -39,7 +47,7 @@ const db = {
             con = await db.connectToDB();
             //the getAllServices function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM Services';
+            let request = 'SELECT * FROM services';
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
@@ -111,7 +119,7 @@ const db = {
         let con;
         try {
             con = await db.connectToDB();
-            const [rows] = await con.query('SELECT * FROM Services WHERE id = ?', [id]);
+            const [rows] = await con.query('SELECT * FROM services WHERE id = ?', [id]);
             return rows[0];
         } catch (err) {
             console.log(err);
