@@ -1,11 +1,10 @@
 import { getAllClients, getClientById } from "../models/client.model.js";
-import IsValidId from "../utils/helper.mjs"
-import IsValidLimit from "../utils/helper.mjs"
+import IsValidInteger from "../utils/helper.mjs"
 
 export const fetchAllClients = async (req, res, next) => {
     try {
         const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
-        if (limit !== null && (!isValidLimit(limit) || limit <= 0)) {
+        if (limit !== null && (!isValidInteger(limit) || limit <= 0)) {
             throw {status: 400, message: 'Limit must be a positive number.'};
         }
         const clients = await getAllClients(limit);
@@ -21,7 +20,7 @@ export const fetchAllClients = async (req, res, next) => {
 export const fetchClientById = async (req, res, next) => {
     try {
         const {id} = req.params;
-        if (!isValidId(id)) {
+        if (!isValidInteger(id)) {
             throw {status: 400, message: "Invalid id"};
         }
         const client = await getClientById(id);
