@@ -21,7 +21,7 @@ const db = {
 
     },
 
-    getAllLocalities: async (limit) => {
+    getAllLocations: async (limit) => {
         let con;
         try {
             con = await db.connectToDB();
@@ -101,7 +101,7 @@ const db = {
         }
     },
 
-    getLocalityById: async ( id) => {
+    getLocationById: async ( id) => {
         let con;
         try {
             con = await db.connectToDB();
