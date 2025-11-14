@@ -1,4 +1,5 @@
 import { getAllClients, getClientById } from "../models/client.model.js";
+import IsValidId from "../utils/helper.mjs"
 
 export const fetchAllClients = async (req, res, next) => {
     try {
@@ -18,24 +19,18 @@ export const fetchAllClients = async (req, res, next) => {
 
 export const fetchClientById = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
+        if (!isValidId(id)) {
+            throw {status: 400, message: "Invalid id"};
+        }
         const client = await getClientById(id);
 
         if (!client) {
-            return res.status(404).json({
-                status: 404,
-                error: "Not Found",
-                message: `Client with id ${id} not found.`,
-            });
+            throw {status: 400, message: "Client not found"};
         }
 
         res.status(200).json(client);
     } catch (error) {
-        console.error("Error fetching client by ID:", error);
-        res.status(500).json({
-            status: 500,
-            error: "Internal Server Error",
-            message: "Failed to retrieve client.",
-        });
+        next(error);
     }
 };

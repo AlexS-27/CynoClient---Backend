@@ -4,20 +4,27 @@ import clientRoutes from "./routes/client.routes.js";
 const app = express();
 app.use(express.json());
 
-// Enregistre les routes
+// routes
 app.use("/clients", clientRoutes);
 
-// Middleware d’erreur global
+// global error manager (with ChatGPT's help)
 app.use((err, req, res, next) => {
     console.error("Unhandled error:", err);
-    res.status(500).json({
-        status: 500,
-        error: "Internal Server Error",
-        message: err.message,
+    const status = err.status || 500;
+    const errorMessages = {
+        400: 'Bad Request',
+        404: 'Not Found',
+        500: 'Internal Server Error',
+        503: 'Service Unavailable'
+    };
+    res.status(status).json({
+        status,
+        error: errorMessages[status] || 'Error',
+        message:err.message || 'An unexpected error occurred.'
     });
 });
 
-// Démarrage du serveur
+// start the server
 app.listen(3000, () => {
     console.log("Server running on http://localhost:3000");
 });
