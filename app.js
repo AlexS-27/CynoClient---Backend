@@ -1,11 +1,17 @@
 import express from "express";
 import clientRoutes from "./routes/client.routes.js";
+import chienRoutes from "./routes/chien.routes.js";
+import localiteRoutes from "./routes/localite.routes.js";
+import serviceRoutes from "./routes/service.routes.js";
 
 const app = express();
 app.use(express.json());
 
 // routes
 app.use("/clients", clientRoutes);
+app.use("/chiens", chienRoutes);
+app.use("/locations", localiteRoutes);
+app.use("/services", serviceRoutes);
 
 // global error manager (with ChatGPT's help)
 app.use((err, req, res, next) => {
