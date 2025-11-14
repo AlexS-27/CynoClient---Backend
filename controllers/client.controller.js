@@ -8,7 +8,7 @@ export const fetchAllClients = async (req, res, next) => {
             throw {status: 400, message: 'Limit must be a positive number.'};
         }
         const clients = await getAllClients(limit);
-        if (!clients || !clients.length === 0) {
+        if (!clients || clients.length === 0) {
             throw {status: 404, message: 'No clients found.'};
         }
         res.status(200).json(clients);
