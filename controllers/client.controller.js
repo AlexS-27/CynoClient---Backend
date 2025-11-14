@@ -1,5 +1,5 @@
 import { getAllClients, getClientById } from "../models/client.model.js";
-import IsValidInteger from "../utils/helper.mjs"
+import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllClients = async (req, res, next) => {
     try {
