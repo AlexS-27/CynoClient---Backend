@@ -8,7 +8,7 @@ const db = {
             const connection = await mysql.createConnection({
                 host: "localhost",
                 user: "root",
-                password: "",
+                password: "root",
                 port: 3306,
                 database: "cyno_client", //database name
             });
@@ -27,7 +27,7 @@ const db = {
             con = await db.connectToDB();
             //the getAllLocalities function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM Localities';
+            let request = 'SELECT * FROM locations';
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
@@ -67,7 +67,7 @@ const db = {
             con = await db.connectToDB();
             //the getAllDogs function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM Dogs';
+            let request = 'SELECT * FROM dogs';
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
@@ -87,7 +87,7 @@ const db = {
             con = await db.connectToDB();
             //the getAllClients function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM Clients';
+            let request = 'SELECT * FROM clients';
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
@@ -105,7 +105,7 @@ const db = {
         let con;
         try {
             con = await db.connectToDB();
-            const [rows] = await con.query('SELECT * FROM Localities WHERE id = ?', [id]);
+            const [rows] = await con.query('SELECT * FROM locations WHERE id = ?', [id]);
             return rows[0];
         } catch (err) {
             console.log(err);
@@ -133,7 +133,7 @@ const db = {
         let con;
         try {
             con = await db.connectToDB();
-            const [rows] = await con.query('SELECT * FROM Dogs WHERE id = ?', [id]);
+            const [rows] = await con.query('SELECT * FROM dogs WHERE id = ?', [id]);
             return rows[0];
         } catch (err) {
             console.log(err);
@@ -147,7 +147,7 @@ const db = {
         let con;
         try {
             con = await db.connectToDB();
-            const [rows] = await con.query('SELECT * FROM Clients WHERE id = ?', [id]);
+            const [rows] = await con.query('SELECT * FROM clients WHERE id = ?', [id]);
             return rows[0];
         } catch (err) {
             console.log(err);
