@@ -1,41 +1,36 @@
-import { getAllServices, getServiceById } from "../models/services.model.js";
+import { getAllServices, getServiceById } from "../models/service.model.js";
+import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllServices = async (req, res, next) => {
     try {
         const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
-        const service = await getAllServices(limit);
-
-        res.status(200).json(service);
+        if (limit !== null && (!isValidInteger(limit) || limit <= 0)) {
+            throw {status: 400, message: 'Limit must be a positive number.'};
+        }
+        const services = await getAllServices(limit);
+        if (!services || services.length === 0) {
+            throw {status: 404, message: 'No services found.'};
+        }
+        res.status(200).json(services);
     } catch (error) {
-        console.error("Error fetching services:", error);
-        res.status(500).json({
-            status: 500,
-            error: "Internal Server Error",
-            message: "Failed to retrieve services.",
-        });
+        next(error);
     }
 };
 
-export const fetchServicesById = async (req, res, next) => {
+export const fetchServiceById = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
+        if (!isValidInteger(id)) {
+            throw {status: 400, message: "Invalid id"};
+        }
         const service = await getServiceById(id);
 
         if (!service) {
-            return res.status(404).json({
-                status: 404,
-                error: "Not Found",
-                message: `Service with id ${id} not found.`,
-            });
+            throw {status: 404, message: "Service not found"};
         }
 
         res.status(200).json(service);
     } catch (error) {
-        console.error("Error fetching service by ID:", error);
-        res.status(500).json({
-            status: 500,
-            error: "Internal Server Error",
-            message: "Failed to retrieve service.",
-        });
+        next(error);
     }
 };
