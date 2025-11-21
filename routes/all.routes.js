@@ -4,28 +4,14 @@ AUTHOR        : Niels Delafontaine, Kilian Testard
 DATE CREATED  : 14.11.2025
 LAST MODIFIED : 21.11.2025
 DESCRIPTION   :
-    Routing layer providing consolidated endpoints that fetch data across
-    multiple tables: clients, dogs, locations, and services.
-    This file exposes routes to retrieve:
-        - all records from each table at once
-        - all records matching a specific ID from each table
+    Defines the routing layer for all API endpoints.
+    Connects HTTP routes to the corresponding controller functions.
 
 REQUIRED LIBRARIES:
-    - express : For creating the router and handling HTTP routing.
-    - ../utils/helper.mjs
-        > isValidInteger
-    - ../models/client.model.js
-        > getAllClients
-        > getClientById
-    - ../models/chien.model.js
-        > getAllDogs
-        > getDogById
-    - ../models/localite.model.js
-        > getAllLocations
-        > getLocationById
-    - ../models/service.model.js
-        > getAllServices
-        > getServiceById
+     - express: For creating the router and handling HTTP routing.
+     - ../controllers/all.controller.js
+        > fetchAllResources
+        > fetchResourcesById
 
 EXPORTED FUNCTIONS:
     - router (default)

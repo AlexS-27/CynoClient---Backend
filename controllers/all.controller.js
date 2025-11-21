@@ -1,3 +1,32 @@
+/*
+FILE          : all.controler.js
+AUTHOR        : Niels Delafontaine
+DATE CREATED  : 21.11.2025
+LAST MODIFIED : 21.11.2025
+DESCRIPTION   :
+    Controller for all-related endpoints in the application.
+    Provides functions to fetch all or all by its ID.
+
+REQUIRED LIBRARIES:
+    - Express.js (for request and response objects)
+    - ../models/client.model.js (for database access functions)
+    - ../models/dog.model.js (for database access functions)
+    - ../models/location.model.js (for database access functions)
+    - ../models/service.model.js (for database access functions)
+    - ../utils/helper.mjs (for validation helpers, e.g., isValidInteger)
+
+EXPORTED FUNCTIONS:
+    - fetchAllResources(req, res, next)
+        Retrieves all data from the database, with optional limit query parameter.
+        Throws 400 if limit is invalid, 404 if no services found.
+    - fetchResourcesById(req, res, next)
+        Retrieves all data with a specific ID.
+        Throws 400 if ID is invalid, 404 if service not found.
+
+NOTES:
+    - All functions use async/await and forward errors to Express error handler via next().
+    - Input validation is handled using isValidInteger from helper.mjs.
+*/
 import { isValidInteger } from "../utils/helper.mjs";
 import { getAllClients, getClientById } from "../models/client.model.js";
 import { getAllDogs, getDogById } from "../models/dog.model.js";
