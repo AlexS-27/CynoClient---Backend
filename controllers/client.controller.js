@@ -1,3 +1,30 @@
+/*
+FILE          : client.controller.js
+AUTHOR        : Kilian Testard
+DATE CREATED  : 14.11.2025
+LAST MODIFIED : 21.11.2025
+DESCRIPTION   :
+    Controller for client-related endpoints in the application.
+    Provides functions to fetch all clients or a client by its ID.
+
+REQUIRED LIBRARIES:
+    - Express.js (for request and response objects)
+    - ../models/client.model.js (for database access functions)
+    - ../utils/helper.mjs (for validation helpers, e.g., isValidInteger)
+
+EXPORTED FUNCTIONS:
+    - fetchAllClients(req, res, next)
+        Retrieves all clients from the database, with optional limit query parameter.
+        Throws 400 if limit is invalid, 404 if no services found.
+    - fetchClientById(req, res, next)
+        Retrieves a single client by ID.
+        Throws 400 if ID is invalid, 404 if service not found.
+
+NOTES:
+    - All functions use async/await and forward errors to Express error handler via next().
+    - Input validation is handled using isValidInteger from helper.mjs.
+*/
+
 import { getAllClients, getClientById } from "../models/client.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 

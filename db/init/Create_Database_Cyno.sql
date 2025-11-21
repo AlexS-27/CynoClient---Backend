@@ -1,3 +1,65 @@
+/*
+FILE          : cyno_client_schema.sql
+AUTHOR        : Alex Kamano
+DATE CREATED  : 14.11.2025
+LAST MODIFIED : 21.11.2025
+DESCRIPTION   :
+    Full database schema for the "cyno_client" project.
+    Creates all tables required for managing:
+        - Clients
+        - Dogs
+        - Breeds
+        - Locations
+        - Services
+        - Diseases
+        - Dog–Disease relations (N,N)
+
+CONTENT:
+    - Drops the existing database (if any)
+    - Creates database with UTF8MB4 support
+    - Creates all tables with constraints and cascading behaviors
+
+TABLES:
+    • locations
+        Stores Swiss location metadata (postal codes, canton, language).
+
+    • clients
+        Stores owner profiles (identity, email, phone, address).
+
+    • breeds
+        Stores dog breed data (links, size, weight, classification, etc.).
+
+    • dogs
+        Represents individual dogs belonging to clients.
+        References:
+            - client_id → clients(id)
+            - breed_id → breeds(id)
+        Cascades on delete.
+
+    • diseases
+        Stores medical diseases, symptoms, prevention and treatment info.
+
+    • services
+        Represents services performed on dogs (e.g. training, grooming).
+        References:
+            - dog_id → dogs(id)
+            - location_id → locations(id)
+        Uses:
+            - CASCADE for dog deletion
+            - SET NULL for location deletion
+
+    • dog_diseases
+        Associative table for Dog ↔ Disease (many-to-many).
+        Cascades on delete for both entities.
+
+NOTES:
+    - All foreign keys are enforced with ON DELETE rules.
+    - Schema is compatible with MySQL 8+.
+    - Designed to be used by the Express API of the project.
+
+GENERATED WITH CHATGPT ASSISTANCE
+*/
+
 -- ==========================================================
 -- Création de la base de données
 -- ==========================================================
