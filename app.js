@@ -40,6 +40,7 @@ NOTES:
 */
 
 
+import "dotenv/config";
 import express from "express";
 import clientRoutes from "./routes/client.routes.js";
 import dogRoutes from "./routes/dog.routes.js";

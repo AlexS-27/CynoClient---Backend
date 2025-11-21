@@ -57,11 +57,11 @@ const db = {
     connectToDB: async () => {
         try {
             const connection = await mysql.createConnection({
-                host: "localhost",
-                user: "root",
-                password: "root",
-                port: 3306,
-                database: "cyno_client", //database name
+                host: process.env.DB_HOST,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                port: process.env.DB_PORT,
+                database: process.env.DB_NAME, //database name
             });
             console.log("Connected to DB");
             return connection;
