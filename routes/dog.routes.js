@@ -1,5 +1,5 @@
 import express from "express";
-import { fetchAllDogs, fetchDogById } from "../controllers/chien.controller.js";
+import { fetchAllDogs, fetchDogById } from "../controllers/dog.controller.js";
 
 const router = express.Router();
 

@@ -3,8 +3,8 @@ import { isValidInteger } from "../utils/helper.mjs";
 
 // Fonctions qui parlent à la DB directement
 import { getAllClients, getClientById } from "../models/client.model.js";
-import { getAllDogs, getDogById } from "../models/chien.model.js";
-import { getAllLocations, getLocationById } from "../models/localite.model.js";
+import { getAllDogs, getDogById } from "../models/dog.model.js";
+import { getAllLocations, getLocationById } from "../models/location.model.js";
 import { getAllServices, getServiceById } from "../models/service.model.js";
 
 const router = express.Router();
