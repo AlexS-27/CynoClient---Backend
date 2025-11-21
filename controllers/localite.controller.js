@@ -1,3 +1,30 @@
+/*
+FILE          : location.controller.js
+AUTHOR        : Alexandre Ramirez
+DATE CREATED  : 14.11.2025
+LAST MODIFIED : 21.11.2025
+DESCRIPTION   :
+    Controller for location-related endpoints in the application.
+    Provides functions to fetch all locations or a location by its ID.
+
+REQUIRED LIBRARIES:
+    - Express.js (for request and response objects)
+    - ../models/location.model.js (for database access functions)
+    - ../utils/helper.mjs (for validation helpers, e.g., isValidInteger)
+
+EXPORTED FUNCTIONS:
+    - fetchAllLocations(req, res, next)
+        Retrieves all locations from the database, with optional limit query parameter.
+        Throws 400 if limit is invalid, 404 if no locations found.
+    - fetchLocationById(req, res, next)
+        Retrieves a single location by ID.
+        Throws 400 if ID is invalid, 404 if location not found.
+
+NOTES:
+    - All functions use async/await and forward errors to Express error handler via next().
+    - Input validation is handled using isValidInteger from helper.mjs.
+*/
+
 import { getAllLocations, getLocationById } from "../models/localite.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
