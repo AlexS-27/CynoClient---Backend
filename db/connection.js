@@ -16,6 +16,7 @@ const db = {
             return connection;
         } catch (error) {
             console.error("Error connexion DataBase", error);
+            error.status = 503;
             throw error;
         }
 
