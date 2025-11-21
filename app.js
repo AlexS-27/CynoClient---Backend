@@ -1,7 +1,7 @@
 import express from "express";
 import clientRoutes from "./routes/client.routes.js";
-import chienRoutes from "./routes/chien.routes.js";
-import localiteRoutes from "./routes/localite.routes.js";
+import dogRoutes from "./routes/dog.routes.js";
+import locationRoutes from "./routes/location.routes.js";
 import serviceRoutes from "./routes/service.routes.js";
 import allRoutes from "./routes/all.routes.js";
 
@@ -10,8 +10,8 @@ app.use(express.json());
 
 // routes
 app.use("/clients", clientRoutes);
-app.use("/chiens", chienRoutes);
-app.use("/locations", localiteRoutes);
+app.use("/dogs", dogRoutes);
+app.use("/locations", locationRoutes);
 app.use("/services", serviceRoutes);
 app.use("/all", allRoutes);
 
