@@ -1,4 +1,4 @@
-import { getAllDogs, getDogById } from "../models/chien.model.js";
+import { getAllDogs, getDogById } from "../models/dog.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllDogs = async (req, res, next) => {

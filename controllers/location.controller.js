@@ -1,4 +1,4 @@
-import { getAllLocations, getLocationById } from "../models/localite.model.js";
+import { getAllLocations, getLocationById } from "../models/location.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllLocations = async (req, res, next) => {
