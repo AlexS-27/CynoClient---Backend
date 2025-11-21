@@ -3,6 +3,7 @@ import clientRoutes from "./routes/client.routes.js";
 import chienRoutes from "./routes/chien.routes.js";
 import localiteRoutes from "./routes/localite.routes.js";
 import serviceRoutes from "./routes/service.routes.js";
+import allRoutes from "./routes/all.routes.js";
 
 const app = express();
 app.use(express.json());
@@ -12,6 +13,7 @@ app.use("/clients", clientRoutes);
 app.use("/chiens", chienRoutes);
 app.use("/locations", localiteRoutes);
 app.use("/services", serviceRoutes);
+app.use("/all", allRoutes);
 
 // global error manager (with ChatGPT's help)
 app.use((err, req, res, next) => {
