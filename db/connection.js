@@ -1,3 +1,54 @@
+/*
+FILE          : connection.js
+AUTHOR        : Niels Delafontaine
+DATE CREATED  : 14.11.2025
+LAST MODIFIED : 21.11.2025
+DESCRIPTION   :
+    Database access module using mysql2/promise.
+    Provides:
+        - MySQL connection handling
+        - CRUD-like utilities to retrieve data from tables
+        - Safe connection opening/closing
+        - Helper functions for retrieving all records or a single record by ID
+    Acts as the centralized data layer for the application.
+
+REQUIRED LIBRARIES:
+    - mysql2/promise : For asynchronous MySQL interactions.
+
+EXPORTED OBJECT:
+    - db (object literal):
+        Methods:
+            • connectToDB()
+                Creates and returns a new MySQL connection.
+            • disconnectFromDatabase(connection)
+                Gracefully closes the provided MySQL connection.
+
+            • getAllClients(limit)
+            • getAllDogs(limit)
+            • getAllLocations(limit)
+            • getAllServices(limit)
+                → Fetch all rows from the corresponding table, with optional LIMIT.
+
+            • getClientById(id)
+            • getDogById(id)
+            • getLocationById(id)
+            • getServiceById(id)
+                → Fetch a single record by ID from the corresponding table.
+
+BEHAVIOR:
+    - Each query:
+        • Opens a new connection
+        • Executes the SQL statement
+        • Returns the result
+        • Closes the connection in a finally block
+
+NOTES:
+    - This module abstracts database logic away from controllers and models.
+    - All errors are logged and rethrown for central error handling.
+    - Designed for small to medium projects (creates new connection per request).
+*/
+
+
 import mysql from 'mysql2/promise';
 
 //I create a javascript literal object which contains methods, I will export it after having created it
