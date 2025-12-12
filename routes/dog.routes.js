@@ -2,7 +2,7 @@
 FILE          : dog.routes.js
 AUTHOR        : Niels Delafontaine
 DATE CREATED  : 14.11.2025
-LAST MODIFIED : 21.11.2025
+LAST MODIFIED : 12.12.2025
 DESCRIPTION   :
     Defines the routing layer for dog-related API endpoints.
     Connects HTTP routes to the corresponding controller functions.
@@ -27,7 +27,7 @@ NOTES:
 */
 
 import express from "express";
-import { fetchAllDogs, fetchDogById } from "../controllers/dog.controller.js";
+import {fetchAllDogs, fetchDogById, postDog} from "../controllers/dog.controller.js";
 
 const router = express.Router();
 
@@ -36,5 +36,7 @@ router.get("/", fetchAllDogs);
 
 
 router.get("/:id", fetchDogById);
+
+router.post("/", postDog);
 
 export default router;

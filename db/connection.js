@@ -266,6 +266,36 @@ const db = {
         }
     },
 
+    insertDog: async (dogData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+
+            const sql = `INSERT INTO dogs (name, sex, cross_breed, birthdate, sterilized, deceased, client_id, breed_id)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+            const values = [
+                dogData.name,
+                dogData.sex,
+                dogData.cross_breed,
+                dogData.birthdate,
+                dogData.sterilized,
+                dogData.deceased,
+                dogData.client_id,
+                dogData.breed_id,
+            ];
+
+            const [result] = await con.execute(sql, values);
+
+            return result.insertId;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) {await db.disconnectFromDatabase(con); }
+        }
+    },
+
     disconnectFromDatabase: async (connection) => {
         try {
             await connection.end();
