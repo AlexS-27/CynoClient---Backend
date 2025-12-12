@@ -209,12 +209,41 @@ const db = {
         }
     },
 
+    // insertId taken from AI
+    insertClient: async (clientData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+
+            const sql = `INSERT INTO clients (last_name, first_name, gender, email, phone_number, postal_address)
+                                VALUES (?, ?, ?, ?, ?, ?)`;
+
+            const values = [
+                clientData.last_name,
+                clientData.first_name,
+                clientData.gender,
+                clientData.email,
+                clientData.phone_number,
+                clientData.postal_address
+            ];
+
+            const [result] = await con.execute(sql, values);
+
+            return result.insertId;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) {await db.disconnectFromDatabase(con); }
+        }
+    },
+
     disconnectFromDatabase: async (connection) => {
         try {
             await connection.end();
-            console.log('Déconnexion de la base de données réussie');
+            console.log('Successfully disconnected from database.');
         } catch (error) {
-            console.error('Erreur lors de la déconnexion de la base de données :', error);
+            console.error('Encountered an error while disconnecting from database :', error);
             throw error;
         }
     }
