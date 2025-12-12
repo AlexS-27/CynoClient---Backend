@@ -25,7 +25,7 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllServices, getServiceById } from "../models/service.model.js";
+import { getAllServices, getServiceById, createService } from "../models/service.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllServices = async (req, res, next) => {
@@ -57,6 +57,21 @@ export const fetchServiceById = async (req, res, next) => {
         }
 
         res.status(200).json(service);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const fetchCreateService = async (req, res, next) => {
+    try {
+        const serviceData = req.body;
+        const newService = await createService(serviceData);
+
+        res.status(201).json({
+            status: 201,
+            message: "Service created successfully.",
+            data: newService
+        });
     } catch (error) {
         next(error);
     }

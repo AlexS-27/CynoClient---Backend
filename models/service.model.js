@@ -41,3 +41,32 @@ export const getServiceById = async (id) => {
     }
     return await db.getServiceById(id);
 };
+
+export const createService = async (serviceData) => {
+    const {dog_id, service_date, location_id, duration_minutes} = serviceData;
+
+    // Vérification des champs obligatoires
+    if (
+        dog_id == null ||
+        !service_date ||
+        location_id == null ||
+        duration_minutes == null
+    ) {
+        throw {
+            status: 400,
+            message: "Missing required fields (dog_id, service_date, location_id, duration_minutes)."
+        };
+    }
+
+    // Vérification du format date/heure
+    const dateTimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+    if (!dateTimeRegex.test(service_date)) {
+        throw {
+            status: 400,
+            message: "Invalid date format. Please use 'YYYY-MM-DD HH:MM:SS'."
+        };
+    }
+
+    // Appel à la fonction DB
+    return await db.createService(dog_id, service_date, location_id, duration_minutes)
+    };
