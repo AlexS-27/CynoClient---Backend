@@ -25,7 +25,7 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllClients, getClientById } from "../models/client.model.js";
+import { getAllClients, getClientById, insertClient } from "../models/client.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllClients = async (req, res, next) => {
@@ -61,3 +61,34 @@ export const fetchClientById = async (req, res, next) => {
         next(error);
     }
 };
+
+export const createClient = async (req, res, next) => {
+    try {
+        const { last_name, first_name, gender, email, phone_number, postal_address} = req.body;
+
+        if (!last_name || !first_name || !gender || !email || !phone_number || !postal_address || !postal_address) {
+            throw {status: 400, message: 'Please fill in all required fields.'}
+        }
+
+        // email format validation, written by AI
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            throw {status: 400, message: 'Invalid email format.'};
+        }
+
+        const clientData = {
+            last_name: last_name,
+            first_name: first_name,
+            gender: gender,
+            email: email,
+            phone_number: phone_number,
+            postal_address: postal_address
+        }
+
+        const newClientId = await insertClient(clientData);
+
+        res.status(201).json({id: newClientId, ...clientData, message: 'Client successfully created.'});
+    } catch (err) {
+        next(err);
+    }
+}
