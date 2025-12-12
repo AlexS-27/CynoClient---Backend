@@ -38,6 +38,7 @@ router.get("/", fetchAllServices);
 
 router.get("/:id", fetchServiceById);
 
+
 router.post("/", fetchCreateService);
 
 export default router;
