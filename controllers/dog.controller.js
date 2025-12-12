@@ -65,21 +65,31 @@ export const fetchDogById = async (req, res, next) => {
 
 export const postDog = async (req, res, next) => {
     try {
-        const {name, sex, cross_breed, birthdate, sterilized, deceased, client_id, breed_id} = req.body;
+        const {name, sex, cross_breed, birthdate} = req.body;
+        let {sterilized, deceased, client_id, breed_id} = req.body;
+
         //Validation
-        if (!name || !sex || !birthdate || !cross_breed) {
+        if (!name || !sex || !birthdate || cross_breed === undefined || cross_breed === null) {
             throw {status: 400, message: 'Please fill in all required fields.'}
         }
 
+        // Convert boolean fields to 0 or 1, or NULL; if not specified in body, they'll be undefined. Written by AI
+        sterilized = sterilized ? 1 : 0; // if undefined, become 0
+        deceased = deceased ? 1 : 0;       // if undefined, become 0
+
+        // Convert optional ID fields (client_id, breed_id) to NULL if not specified
+        client_id = client_id || null;
+        breed_id = breed_id || null;
+
         const dogData = {
-            name : name,
-            sex : sex,
-            cross_breed : cross_breed,
-            birthdate : birthdate,
-            sterilized : sterilized,
-            deceased : deceased,
-            client_id : client_id,
-            breed_id : breed_id,
+            name: name,
+            sex: sex,
+            cross_breed: cross_breed ? 1 : 0,
+            birthdate: birthdate,
+            sterilized: sterilized,
+            deceased: deceased,
+            client_id: client_id,
+            breed_id: breed_id,
         }
 
         const newDogId = await insertDog(dogData);
