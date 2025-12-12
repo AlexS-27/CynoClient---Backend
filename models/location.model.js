@@ -1,24 +1,24 @@
 /*
-FILE          : service.model.js
-AUTHOR        : Kilian Testard
+FILE          : location.model.js
+AUTHOR        : Alexandre Ramirez
 DATE CREATED  : 14.11.2025
 LAST MODIFIED : 21.11.2025
 DESCRIPTION   :
-    Data model for client-related operations.
-    Provides database access methods to retrieve clients or a single client
+    Data model for location-related operations.
+    Provides database access methods to retrieve locations or a single location
     by its ID using the central database connection layer.
 
 REQUIRED LIBRARIES:
     - ../db/connection.js  : Provides the database instance and connection utilities.
 
 EXPORTED FUNCTIONS:
-    - getAllClients(limit)
-        Retrieves all clients from the database.
+    - getAllLocations(limit)
+        Retrieves all locations from the database.
         Optional 'limit' parameter restricts the number of returned results.
         Throws 503 if the database connection is unavailable.
 
-    - getClientById(id)
-        Retrieves a single client by its unique identifier.
+    - getLocationById(id)
+        Retrieves a single location by its unique identifier.
         Throws 503 if the database connection is unavailable.
 
 NOTES:
@@ -27,16 +27,13 @@ NOTES:
     - Errors are thrown as objects with {status, message} to integrate with controllers.
 */
 
+
 import { db } from "../db/connection.js";
 
-export const getAllClients = async (limit = null) => {
-    return await db.getAllClients(limit);
+export const getAllLocations = async (limit = null) => {
+    return await db.getAllLocations(limit);
 };
 
-export const getClientById = async (id) => {
-    return await db.getClientById(id);
+export const getLocationById = async (id) => {
+    return await db.getLocationById(id);
 };
-
-export const insertClient = async (clientData) => {
-    return await db.insertClient(clientData);
-}
