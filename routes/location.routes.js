@@ -27,7 +27,7 @@ NOTES:
 */
 
 import express from "express";
-import { fetchAllLocations, fetchLocationById } from "../controllers/location.controller.js";
+import { fetchAllLocations, fetchLocationById, postLocation } from "../controllers/location.controller.js";
 
 const router = express.Router();
 
@@ -36,5 +36,8 @@ router.get("/", fetchAllLocations);
 
 
 router.get("/:id", fetchLocationById);
+
+
+router.post("/", postLocation);
 
 export default router;
