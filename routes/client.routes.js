@@ -27,14 +27,14 @@ NOTES:
 */
 
 import express from "express";
-import { fetchAllClients, fetchClientById } from "../controllers/client.controller.js";
+import { fetchAllClients, fetchClientById, createClient } from "../controllers/client.controller.js";
 
 const router = express.Router();
 
-
 router.get("/", fetchAllClients);
 
-
 router.get("/:id", fetchClientById);
+
+router.post("/", createClient);
 
 export default router;

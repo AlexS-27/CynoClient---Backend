@@ -36,3 +36,7 @@ export const getAllClients = async (limit = null) => {
 export const getClientById = async (id) => {
     return await db.getClientById(id);
 };
+
+export const insertClient = async (clientData) => {
+    return await db.insertClient(clientData);
+}
