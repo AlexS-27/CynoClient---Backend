@@ -58,7 +58,7 @@ export const createService = async (serviceData) => {
         };
     }
 
-    // Vérification du format date/heure : YYYY-MM-DD HH:MM:SS
+    // Vérification du format date/heure
     const dateTimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
     if (!dateTimeRegex.test(service_date)) {
         throw {
