@@ -41,3 +41,10 @@ export const getServiceById = async (id) => {
     }
     return await db.getServiceById(id);
 };
+
+export const createService = async (serviceData) => {
+    if (!serviceData.dog_id || !serviceData.service_date || !serviceData.location_id || !serviceData.duration_minutes) {
+        throw { status: 400, message: "Missing required fields (dog_id, service_date, location_id, duration_minutes)." };
+    }
+    return await db.createService(serviceData.dog_id, serviceData.service_date, serviceData.location_id, serviceData.duration_minutes);
+};

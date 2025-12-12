@@ -63,6 +63,12 @@ const db = {
                 port: process.env.DB_PORT,
                 database: process.env.DB_NAME, //database name
             });
+            console.log('DB_HOST:', process.env.DB_HOST);
+            console.log('DB_USER:', process.env.DB_USER);
+            console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
+            console.log('DB_NAME:', process.env.DB_NAME);
+
+
             console.log("Connected to DB");
             return connection;
         } catch (error) {
@@ -208,6 +214,28 @@ const db = {
             if (con) {await db.disconnectFromDatabase(con); }
         }
     },
+        createService: async (dog_id, service_date, location_id, duration_minutes) => {
+            let con;
+            try {
+                con = await db.connectToDB();
+                const [result] = await con.query(
+                    'INSERT INTO services (dog_id, service_date, location_id, duration_minutes) VALUES (?, ?, ?, ?)',
+                    [dog_id, service_date, location_id, duration_minutes] // ✅ 4 valeurs
+                );
+                return {
+                    id: result.insertId,
+                    dog_id,
+                    service_date,
+                    location_id,
+                    duration_minutes
+                };
+            } catch (err) {
+                console.error(err);
+                throw { status: 500, message: "Failed to create service." };
+            } finally {
+                if (con) await db.disconnectFromDatabase(con);
+            }
+        },
 
     disconnectFromDatabase: async (connection) => {
         try {
@@ -217,7 +245,7 @@ const db = {
             console.error('Erreur lors de la déconnexion de la base de données :', error);
             throw error;
         }
-    }
+    },
 }
 
 export { db }

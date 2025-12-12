@@ -28,7 +28,7 @@ NOTES:
 
 
 import express from "express";
-import { fetchAllServices, fetchServiceById } from "../controllers/service.controller.js";
+import { fetchAllServices, fetchServiceById, fetchCreateService } from "../controllers/service.controller.js";
 
 const router = express.Router();
 
@@ -37,5 +37,7 @@ router.get("/", fetchAllServices);
 
 
 router.get("/:id", fetchServiceById);
+
+router.post("/", fetchCreateService);
 
 export default router;
