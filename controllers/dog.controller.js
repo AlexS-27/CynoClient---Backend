@@ -2,7 +2,7 @@
 FILE          : dog.controller.js
 AUTHOR        : Niels Delafontaine
 DATE CREATED  : 14.11.2025
-LAST MODIFIED : 21.11.2025
+LAST MODIFIED : 12.12.2025
 DESCRIPTION   :
     Controller for dog-related endpoints in the application.
     Provides functions to fetch all dogs or a dog by its ID.
@@ -25,8 +25,9 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllDogs, getDogById } from "../models/dog.model.js";
+import { getAllDogs, getDogById, insertDog } from "../models/dog.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
+import {createServer} from "mysql2";
 
 export const fetchAllDogs = async (req, res, next) => {
     try {
@@ -57,6 +58,33 @@ export const fetchDogById = async (req, res, next) => {
         }
 
         res.status(200).json(dog);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const postDog = async (req, res, next) => {
+    try {
+        const {name, sex, cross_breed, birthdate, sterilized, deceased, client_id, breed_id} = req.body;
+        //Validation
+        if (!name || !sex || !birthdate || !cross_breed) {
+            throw {status: 400, message: 'Please fill in all required fields.'}
+        }
+
+        const dogData = {
+            name : name,
+            sex : sex,
+            cross_breed : cross_breed,
+            birthdate : birthdate,
+            sterilized : sterilized,
+            deceased : deceased,
+            client_id : client_id,
+            breed_id : breed_id,
+        }
+
+        const newDogId = await insertDog(dogData);
+
+        res.status(201).json({id: newDogId, ...dogData, message:'Dog successfully created.'});
     } catch (error) {
         next(error);
     }
