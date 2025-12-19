@@ -25,7 +25,7 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllLocations, getLocationById, createLocation } from "../models/location.model.js";
+import { getAllLocations, getLocationById, createLocation, updateLocationById } from "../models/location.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllLocations = async (req, res, next) => {
@@ -85,3 +85,44 @@ export const postLocation = async (req, res, next) => {
         next(error);
     }
 };
+
+export const updateLocation = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (!isValidInteger(id)) {
+            throw { status: 400, message: "Invalid id" };
+        }
+
+        const {
+            name,
+            postal_code,
+            postal_code_extra,
+            toponym,
+            canton_code,
+            lang_code
+        } = req.body;
+
+        if (!name || !postal_code || !toponym || !canton_code || !lang_code) {
+            throw { status: 400, message: "Missing required fields" };
+        }
+
+        const updatedLocation = await updateLocationById(id, {
+            name,
+            postal_code,
+            postal_code_extra: postal_code_extra || null,
+            toponym,
+            canton_code,
+            lang_code
+        });
+
+        if (!updatedLocation) {
+            throw { status: 404, message: "Location not found" };
+        }
+
+        res.status(200).json(updatedLocation);
+    } catch (error) {
+        next(error);
+    }
+};
+
