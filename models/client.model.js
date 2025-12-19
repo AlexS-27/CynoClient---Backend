@@ -40,3 +40,11 @@ export const getClientById = async (id) => {
 export const insertClient = async (clientData) => {
     return await db.insertClient(clientData);
 }
+
+export const updateClient = async (id, clientData) => {
+    return await db.updateClient(id, clientData);
+}
+
+export const deleteClient = async (id) => {
+    return await db.deleteClient(id);
+}
