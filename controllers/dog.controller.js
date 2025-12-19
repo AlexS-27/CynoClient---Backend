@@ -25,7 +25,7 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllDogs, getDogById, insertDog } from "../models/dog.model.js";
+import { getAllDogs, getDogById, insertDog, deleteDog, updateDog } from "../models/dog.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 import {createServer} from "mysql2";
 
@@ -100,3 +100,46 @@ export const postDog = async (req, res, next) => {
     }
 };
 
+export const modifyDog = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const dogData = req.body;
+
+        if (!isValidInteger(id)) {
+            throw {status: 400, message: "Invalid id"};
+        }
+
+        // validation
+        if (!dogData.name && !dogData.sex && !dogData.birthdate && !dogData.cross_breed && !dogData.cross_breed) {
+            throw {status: 400, message: 'Please provide at least one field to update.'}
+        }
+
+        const affectedRows = await updateDog(id, dogData);
+        if (affectedRows === 0) {
+            throw {status: 404, message: 'Dog not found or no changes made.'};
+        }
+
+        res.status(200).json({ id, ...dogData, message: 'Dog successfully updated.' });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const terminateDog = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (!isValidInteger(id)) {
+            throw {status: 400, message: "Invalid id"};
+        }
+
+        const affectedRows = await deleteDog(id);
+        if (affectedRows === 0) {
+            throw {status: 404, message: 'Dog not found.'};
+        }
+
+        res.status(200).json({ message: `dog with id ${id} successfully deleted.` });
+    } catch (err) {
+        next(err);
+    }
+}

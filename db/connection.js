@@ -347,6 +347,38 @@ const db = {
         }
     },
 
+    updateDog: async (id, dogData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            // Filtre pour ignorer les valeurs 'undefined'
+            const keys = Object.keys(dogData).filter(key => dogData[key] !== undefined);
+
+            if (keys.length === 0) return 0;
+            // Construction dynamique pour le SET
+            const setClause = keys.map(key => `${key} = ?`).join(', ');
+            // Attribution des valeurs correspondantes
+            const values = keys.map(key => {
+                // Conversion spécifique pour les bool
+                if (['cross_breed', 'sterilized', 'deceased'].includes(key)) {
+                    return dogData[key] ? 1 : 0;
+                }
+                return dogData[key];
+            });
+
+            values.push(id);
+
+            const sql = `UPDATE dogs SET ${setClause} WHERE id = ?`;
+            const [result] = await con.execute(sql, values);
+            return result.affectedRows; // return the amount of modified lines
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
     deleteService: async (id) => {
         let con;
         try {
@@ -369,6 +401,20 @@ const db = {
         try {
             con = await db.connectToDB();
             const [result] = await con.execute('DELETE FROM clients WHERE id = ?', [id])
+            return result.affectedRows;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    deleteDog: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const [result] = await con.execute('DELETE FROM dogs WHERE id = ?', [id])
             return result.affectedRows;
         } catch (err) {
             console.log(err);
