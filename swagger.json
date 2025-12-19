@@ -1,0 +1,181 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CynoClient API Documentation",
+    "version": "1.0.0",
+    "description": "API logicielle pour la gestion d'éducation canine (Clients, Chiens, Services et Lieux).",
+    "contact": {
+      "name": "Niels D., Kilian T., Alexandre R., Alex K."
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Serveur local"
+    }
+  ],
+  "tags": [
+    { "name": "Global", "description": "Endpoints multi-tables" },
+    { "name": "Clients", "description": "Gestion des propriétaires" },
+    { "name": "Dogs", "description": "Gestion des chiens" },
+    { "name": "Locations", "description": "Gestion des lieux d'entraînement" },
+    { "name": "Services", "description": "Gestion des prestations/rendez-vous" }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Global"],
+        "summary": "Fetch all resources from all tables",
+        "responses": { "200": { "description": "Object containing arrays for all tables" } }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "tags": ["Global"],
+        "summary": "Fetch resource by ID across all tables",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Matching records from each table" } }
+      }
+    },
+    "/clients": {
+      "get": {
+        "tags": ["Clients"],
+        "summary": "Get all clients",
+        "parameters": [{ "name": "limit", "in": "query", "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "List of clients" } }
+      },
+      "post": {
+        "tags": ["Clients"],
+        "summary": "Create a new client",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Client" } } }
+        },
+        "responses": { "201": { "description": "Client created" } }
+      }
+    },
+    "/clients/{id}": {
+      "get": { "tags": ["Clients"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Success" } } },
+      "put": {
+        "tags": ["Clients"],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Client" } } } },
+        "responses": { "200": { "description": "Updated" } }
+      },
+      "delete": { "tags": ["Clients"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Deleted" } } }
+    },
+    "/dogs": {
+      "get": { "tags": ["Dogs"], "responses": { "200": { "description": "List of dogs" } } },
+      "post": {
+        "tags": ["Dogs"],
+        "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dog" } } } },
+        "responses": { "201": { "description": "Dog created" } }
+      }
+    },
+    "/dogs/{id}": {
+      "patch": {
+        "tags": ["Dogs"],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "name": { "type": "string" } } } } } },
+        "responses": { "200": { "description": "Updated" } }
+      },
+      "delete": { "tags": ["Dogs"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Deleted" } } }
+    },
+    "/services": {
+      "get": { "tags": ["Services"], "responses": { "200": { "description": "List of services" } } },
+      "post": {
+        "tags": ["Services"],
+        "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Service" } } } },
+        "responses": { "201": { "description": "Service created" } }
+      }
+    },
+    "/services/{id}": {
+      "patch": {
+        "tags": ["Services"],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Service" } } } },
+        "responses": { "200": { "description": "Updated" } }
+      },
+      "delete": { "tags": ["Services"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Deleted" } } }
+    },
+    "/locations": {
+      "get": {
+        "tags": ["Locations"],
+        "summary": "Get all locations",
+        "parameters": [{ "name": "limit", "in": "query", "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Success" } }
+      },
+      "post": {
+        "tags": ["Locations"],
+        "summary": "Create a new location",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Location" } } }
+        },
+        "responses": { "201": { "description": "Location created" } }
+      }
+    },
+    "/locations/{id}": {
+      "get": {
+        "tags": ["Locations"],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Success" } }
+      },
+      "put": {
+        "tags": ["Locations"],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Location" } } }
+        },
+        "responses": { "200": { "description": "Location updated" } }
+      },
+      "delete": {
+        "tags": ["Locations"],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Location deleted" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Client": {
+        "type": "object",
+        "properties": {
+          "last_name": { "type": "string" },
+          "first_name": { "type": "string" },
+          "gender": { "type": "string", "enum": ["M", "F", "O"] },
+          "email": { "type": "string" },
+          "phone_number": { "type": "string" },
+          "postal_address": { "type": "string" }
+        }
+      },
+      "Dog": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "sex": { "type": "string", "enum": ["M", "F"] },
+          "birthdate": { "type": "string", "format": "date" },
+          "client_id": { "type": "integer" },
+          "breed_id": { "type": "integer" }
+        }
+      },
+      "Service": {
+        "type": "object",
+        "properties": {
+          "dog_id": { "type": "integer" },
+          "service_date": { "type": "string", "example": "2025-11-21 14:00:00" },
+          "location_id": { "type": "integer" },
+          "duration_minutes": { "type": "integer" }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "example": "Parc de l'Orangerie" },
+          "address": { "type": "string", "example": "123 Rue de la Paix" },
+          "city": { "type": "string", "example": "Strasbourg" }
+        }
+      }
+    }
+  }
+}
