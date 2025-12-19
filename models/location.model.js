@@ -66,6 +66,56 @@ export const createLocation = async (locationData) => {
     }
 };
 
+export const updateLocationById = async (id, locationData) => {
+    const {
+        name,
+        postal_code,
+        postal_code_extra,
+        toponym,
+        canton_code,
+        lang_code
+    } = locationData;
+
+    let con;
+    try {
+        con = await db.connectToDB();
+
+        const query = `
+            UPDATE locations
+            SET
+                name = ?,
+                postal_code = ?,
+                postal_code_extra = ?,
+                toponym = ?,
+                canton_code = ?,
+                lang_code = ?
+            WHERE id = ?
+        `;
+
+        const [result] = await con.query(query, [
+            name,
+            postal_code,
+            postal_code_extra,
+            toponym,
+            canton_code,
+            lang_code,
+            id
+        ]);
+
+        if (result.affectedRows === 0) {
+            return null;
+        }
+
+        return { id, ...locationData };
+    } catch (err) {
+        console.error("Error updating location:", err);
+        throw { status: 500, message: "Failed to update location" };
+    } finally {
+        if (con) await db.disconnectFromDatabase(con);
+    }
+};
+
+
 export const deleteLocationById = async (id) => {
     let con;
     try {
