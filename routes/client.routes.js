@@ -27,7 +27,14 @@ NOTES:
 */
 
 import express from "express";
-import { fetchAllClients, fetchClientById, createClient } from "../controllers/client.controller.js";
+import {
+    fetchAllClients,
+    fetchClientById,
+    createClient,
+    modifyClient,
+    terminateClient
+} from "../controllers/client.controller.js";
+import {deleteClient} from "../models/client.model.js";
 
 const router = express.Router();
 
@@ -36,5 +43,9 @@ router.get("/", fetchAllClients);
 router.get("/:id", fetchClientById);
 
 router.post("/", createClient);
+
+router.put("/:id", modifyClient);
+
+router.delete("/:id", terminateClient);
 
 export default router;

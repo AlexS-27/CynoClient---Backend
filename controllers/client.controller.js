@@ -25,7 +25,7 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllClients, getClientById, insertClient } from "../models/client.model.js";
+import {deleteClient, getAllClients, getClientById, insertClient, updateClient} from "../models/client.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllClients = async (req, res, next) => {
@@ -88,6 +88,50 @@ export const createClient = async (req, res, next) => {
         const newClientId = await insertClient(clientData);
 
         res.status(201).json({id: newClientId, ...clientData, message: 'Client successfully created.'});
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const modifyClient = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const clientData = req.body;
+
+        if (!isValidInteger(id)) {
+            throw {status: 400, message: "Invalid id"};
+        }
+
+        // validation
+        if (!clientData.last_name || !clientData.first_name || !clientData.gender || !clientData.email || !clientData.phone_number || !clientData.postal_address) {
+            throw {status: 400, message: 'Please fill in all required fields.'}
+        }
+
+        const affectedRows = await updateClient(id, clientData);
+        if (affectedRows === 0) {
+            throw {status: 404, message: 'Client not found or no changes made.'};
+        }
+
+        res.status(200).json({ id, ...clientData, message: 'Client successfully updated.' });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const terminateClient = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (!isValidInteger(id)) {
+            throw {status: 400, message: "Invalid id"};
+        }
+
+        const affectedRows = await deleteClient(id);
+        if (affectedRows === 0) {
+            throw {status: 404, message: 'Client not found.'};
+        }
+
+        res.status(200).json({ message: `Client with id ${id} successfully deleted.` });
     } catch (err) {
         next(err);
     }

@@ -214,27 +214,27 @@ const db = {
             if (con) {await db.disconnectFromDatabase(con); }
         }
     },
-        createService: async (dog_id, service_date, location_id, duration_minutes) => {
-            let con;
-            try {
-                con = await db.connectToDB();
-                const [result] = await con.query(
-                    'INSERT INTO services (dog_id, service_date, location_id, duration_minutes) VALUES (?, ?, ?, ?)',
-                    [dog_id, service_date, location_id, duration_minutes] // ✅ 4 valeurs
-                );
-                return {
-                    id: result.insertId,
-                    dog_id,
-                    service_date,
-                    location_id,
-                    duration_minutes
-                };
-            } catch (err) {
-                console.error(err);
-                throw { status: 500, message: "Failed to create service." };
-            } finally {
-                if (con) await db.disconnectFromDatabase(con);
-            }
+    createService: async (dog_id, service_date, location_id, duration_minutes) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const [result] = await con.query(
+                'INSERT INTO services (dog_id, service_date, location_id, duration_minutes) VALUES (?, ?, ?, ?)',
+                [dog_id, service_date, location_id, duration_minutes] // ✅ 4 valeurs
+            );
+            return {
+                id: result.insertId,
+                dog_id,
+                service_date,
+                location_id,
+                duration_minutes
+            };
+        } catch (err) {
+            console.error(err);
+            throw { status: 500, message: "Failed to create service." };
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
         },
 
     // insertId taken from AI
@@ -293,6 +293,45 @@ const db = {
             throw err;
         } finally {
             if (con) {await db.disconnectFromDatabase(con); }
+        }
+    },
+
+    updateClient: async (id, clientData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = `UPDATE clients SET last_name = ?, first_name = ?, gender = ?, email = ?, phone_number = ?, postal_address = ?
+               WHERE id = ?`;
+            const values = [
+                clientData.last_name,
+                clientData.first_name,
+                clientData.gender,
+                clientData.email,
+                clientData.phone_number,
+                clientData.postal_address,
+                id
+            ];
+            const [result] = await con.execute(sql, values);
+            return result.affectedRows; // return the amount of modified lines
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    deleteClient: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const [result] = await con.execute('DELETE FROM clients WHERE id = ?', [id])
+            return result.affectedRows;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
         }
     },
 
