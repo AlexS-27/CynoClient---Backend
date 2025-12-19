@@ -25,7 +25,7 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllLocations, getLocationById, createLocation } from "../models/location.model.js";
+import { getAllLocations, getLocationById, createLocation, deleteLocationById } from "../models/location.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllLocations = async (req, res, next) => {
@@ -81,6 +81,26 @@ export const postLocation = async (req, res, next) => {
         });
 
         res.status(201).json(newLocation);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteLocation = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (!isValidInteger(id)) {
+            throw { status: 400, message: "Invalid id" };
+        }
+
+        const deleted = await deleteLocationById(id);
+
+        if (!deleted) {
+            throw { status: 404, message: "Location not found" };
+        }
+
+        res.status(204).send();
     } catch (error) {
         next(error);
     }

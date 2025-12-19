@@ -27,7 +27,7 @@ NOTES:
 */
 
 import express from "express";
-import { fetchAllLocations, fetchLocationById, postLocation } from "../controllers/location.controller.js";
+import { fetchAllLocations, fetchLocationById, postLocation, deleteLocation } from "../controllers/location.controller.js";
 
 const router = express.Router();
 
@@ -39,5 +39,9 @@ router.get("/:id", fetchLocationById);
 
 
 router.post("/", postLocation);
+
+
+router.delete("/:id", deleteLocation);
+
 
 export default router;

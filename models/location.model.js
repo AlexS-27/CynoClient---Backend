@@ -65,3 +65,28 @@ export const createLocation = async (locationData) => {
         if (con) await db.disconnectFromDatabase(con);
     }
 };
+
+export const deleteLocationById = async (id) => {
+    let con;
+    try {
+        con = await db.connectToDB();
+
+        const query = `
+            DELETE FROM locations
+            WHERE id = ?
+        `;
+
+        const [result] = await con.query(query, [id]);
+
+        if (result.affectedRows === 0) {
+            return false;
+        }
+
+        return true;
+    } catch (err) {
+        console.error("Error deleting location:", err);
+        throw { status: 500, message: "Failed to delete location" };
+    } finally {
+        if (con) await db.disconnectFromDatabase(con);
+    }
+};
