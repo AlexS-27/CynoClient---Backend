@@ -220,7 +220,7 @@ const db = {
             con = await db.connectToDB();
             const [result] = await con.query(
                 'INSERT INTO services (dog_id, service_date, location_id, duration_minutes) VALUES (?, ?, ?, ?)',
-                [dog_id, service_date, location_id, duration_minutes]
+                [dog_id, service_date, location_id, duration_minutes] // ✅ 4 valeurs
             );
             return {
                 id: result.insertId,
@@ -235,7 +235,7 @@ const db = {
         } finally {
             if (con) await db.disconnectFromDatabase(con);
         }
-    },
+        },
 
     // insertId taken from AI
     insertClient: async (clientData) => {
@@ -319,6 +319,45 @@ const db = {
             throw err;
         }finally {
             if (con) {await db.disconnectFromDatabase(con); }
+        }
+    },
+
+    updateClient: async (id, clientData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = `UPDATE clients SET last_name = ?, first_name = ?, gender = ?, email = ?, phone_number = ?, postal_address = ?
+               WHERE id = ?`;
+            const values = [
+                clientData.last_name,
+                clientData.first_name,
+                clientData.gender,
+                clientData.email,
+                clientData.phone_number,
+                clientData.postal_address,
+                id
+            ];
+            const [result] = await con.execute(sql, values);
+            return result.affectedRows; // return the amount of modified lines
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    deleteClient: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const [result] = await con.execute('DELETE FROM clients WHERE id = ?', [id])
+            return result.affectedRows;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
         }
     },
 
