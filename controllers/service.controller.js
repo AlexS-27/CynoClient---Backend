@@ -25,7 +25,7 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllServices, getServiceById, createService, updateService} from "../models/service.model.js";
+import { getAllServices, getServiceById, createService, updateService, deleteService} from "../models/service.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllServices = async (req, res, next) => {
@@ -97,6 +97,28 @@ export const patchService = async (req, res, next) => {
         });
     } catch (error) {
         // Le middleware d'erreur centralisé s'occupe du reste
+        next(error);
+    }
+};
+
+export const fetchDeleteService = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        // Validation
+        if (!isValidInteger(id)) {
+            throw { status: 400, message: "Invalid service ID." };
+        }
+
+        // Call the model
+        await deleteService(id);
+
+        // Success response
+        res.status(200).json({
+            status: 200,
+            message: `Service with ID ${id} deleted successfully.`
+        });
+    } catch (error) {
         next(error);
     }
 };

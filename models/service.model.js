@@ -103,4 +103,25 @@ export const updateService = async (id, serviceData) => {
 
     // On retourne le service mis à jour pour le controller
     return await db.getServiceById(id);
-}
+};
+
+export const deleteService = async (id) => {
+    // Validation of the ID
+    if (!id || !isValidInteger(id)) {
+        throw { status: 400, message: "Invalid service ID for deletion." };
+    }
+
+    // Database availability check
+    if (!db.connectToDB()) {
+        throw { status: 503, message: "Database unavailable." };
+    }
+
+    // Execution
+    const success = await db.deleteService(id);
+
+    if (!success) {
+        throw { status: 404, message: "Service not found. Nothing to delete." };
+    }
+
+    return true;
+};
