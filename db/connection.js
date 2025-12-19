@@ -347,6 +347,23 @@ const db = {
         }
     },
 
+    deleteService: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'DELETE FROM services WHERE id = ?';
+            const [result] = await con.execute(sql, [id]);
+
+            // Returns true if a row was deleted, false otherwise
+            return result.affectedRows > 0;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
     deleteClient: async (id) => {
         let con;
         try {

@@ -28,7 +28,7 @@ NOTES:
 
 
 import express from "express";
-import { fetchAllServices, fetchServiceById, fetchCreateService, patchService } from "../controllers/service.controller.js";
+import { fetchAllServices, fetchServiceById, fetchCreateService, patchService, fetchDeleteService } from "../controllers/service.controller.js";
 
 const router = express.Router();
 
@@ -36,10 +36,13 @@ const router = express.Router();
 router.get("/", fetchAllServices);
 router.get("/:id", fetchServiceById);
 
-// PUT
+// POST
 router.post("/", fetchCreateService);
 
 // PATCH
 router.patch('/:id', patchService);
+
+// DELETE
+router.delete("/:id", fetchDeleteService);
 
 export default router;
