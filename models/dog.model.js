@@ -39,3 +39,10 @@ export const getDogById = async (id) => {
 export const insertDog = async (dogData) => {
     return await db.insertDog(dogData);
 }
+export const updateDog = async (id, dogData) => {
+    return await db.updateDog(id, dogData);
+}
+
+export const deleteDog = async (id) => {
+    return await db.deleteDog(id);
+}

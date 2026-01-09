@@ -35,7 +35,6 @@ import {
     terminateClient,
     fetchClientsAndDogs
 } from "../controllers/client.controller.js";
-import {deleteClient} from "../models/client.model.js";
 
 const router = express.Router();
 

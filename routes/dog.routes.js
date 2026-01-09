@@ -27,7 +27,7 @@ NOTES:
 */
 
 import express from "express";
-import {fetchAllDogs, fetchDogById, postDog} from "../controllers/dog.controller.js";
+import {fetchAllDogs, fetchDogById, postDog, modifyDog, terminateDog} from "../controllers/dog.controller.js";
 
 const router = express.Router();
 
@@ -38,5 +38,9 @@ router.get("/", fetchAllDogs);
 router.get("/:id", fetchDogById);
 
 router.post("/", postDog);
+
+router.put("/:id", modifyDog);
+
+router.delete("/:id", terminateDog);
 
 export default router;
