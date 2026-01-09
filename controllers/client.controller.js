@@ -25,6 +25,8 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
+// logique métier (validation des entrées, gestion des réponses HTTP)
+
 import {deleteClient, getAllClients, getClientById, insertClient, updateClient} from "../models/client.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 

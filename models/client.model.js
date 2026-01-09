@@ -27,6 +27,8 @@ NOTES:
     - Errors are thrown as objects with {status, message} to integrate with controllers.
 */
 
+// fait le lien entre les contrôleurs et la database
+
 import { db } from "../db/connection.js";
 
 export const getAllClients = async (limit = null) => {

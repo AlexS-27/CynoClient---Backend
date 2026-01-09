@@ -57,6 +57,8 @@ import locationRoutes from "./routes/location.routes.js";
 import serviceRoutes from "./routes/service.routes.js";
 import allRoutes from "./routes/all.routes.js";
 
+// point d'entrée du programme, configure le serveur et le middleware de gestion d'erreurs
+
 const app = express();
 app.use(express.json());
 

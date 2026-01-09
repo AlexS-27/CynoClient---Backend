@@ -220,7 +220,7 @@ const db = {
             con = await db.connectToDB();
             const [result] = await con.query(
                 'INSERT INTO services (dog_id, service_date, location_id, duration_minutes) VALUES (?, ?, ?, ?)',
-                [dog_id, service_date, location_id, duration_minutes] // ✅ 4 valeurs
+                [dog_id, service_date, location_id, duration_minutes]
             );
             return {
                 id: result.insertId,

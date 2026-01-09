@@ -26,6 +26,8 @@ NOTES:
     - This file only defines routes; no business logic is implemented here.
 */
 
+// définit les chemins/endpoints et les lie aux contrôleurs
+
 import express from "express";
 import {
     fetchAllClients,
