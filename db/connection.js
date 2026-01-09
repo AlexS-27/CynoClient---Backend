@@ -119,17 +119,35 @@ const db = {
         }
     },
 
-    getAllDogs: async (limit) => {
+    getAllDogs: async (filters = {},limit = null) => {
         let con;
         try {
             con = await db.connectToDB();
             //the getAllDogs function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM dogs';
+            let request = 'SELECT * FROM dogs where 1=1';
+            const params = [];
+
+            // Construct where
+            if (filters.name) {
+                request += " AND name like ?";
+                params.push(`%${filters.name}%`);
+            }
+
+            if (filters.sex) {
+                request += ` AND sex = ?`;
+                params.push(filters.sex);
+            }
+
+            if (filters.client_id) {
+                request += ` AND client_id = ?`;
+                params.push(filters.client_id);
+            }
+
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
-            const [rows] = await con.query(request);
+            const [rows] = await con.query(request, params);
             return rows;
         } catch (err) {
             console.log(err);
