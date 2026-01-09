@@ -39,104 +39,13 @@ export const getLocationById = async (id) => {
 };
 
 export const createLocation = async (locationData) => {
-    const { name, postal_code, postal_code_extra, toponym, canton_code, lang_code } = locationData;
-    let con;
-    try {
-        con = await db.connectToDB();
-        const query = `
-            INSERT INTO locations 
-            (name, postal_code, postal_code_extra, toponym, canton_code, lang_code)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-        const [result] = await con.query(query, [
-            name,
-            postal_code,
-            postal_code_extra || null,
-            toponym,
-            canton_code,
-            lang_code
-        ]);
-        // Retourne l'ID de la nouvelle entrée
-        return { id: result.insertId, ...locationData };
-    } catch (err) {
-        console.error("Error creating location:", err);
-        throw { status: 500, message: "Failed to create location" };
-    } finally {
-        if (con) await db.disconnectFromDatabase(con);
-    }
+    return await db.createLocation(locationData);
 };
 
 export const updateLocationById = async (id, locationData) => {
-    const {
-        name,
-        postal_code,
-        postal_code_extra,
-        toponym,
-        canton_code,
-        lang_code
-    } = locationData;
-
-    let con;
-    try {
-        con = await db.connectToDB();
-
-        const query = `
-            UPDATE locations
-            SET
-                name = ?,
-                postal_code = ?,
-                postal_code_extra = ?,
-                toponym = ?,
-                canton_code = ?,
-                lang_code = ?
-            WHERE id = ?
-        `;
-
-        const [result] = await con.query(query, [
-            name,
-            postal_code,
-            postal_code_extra,
-            toponym,
-            canton_code,
-            lang_code,
-            id
-        ]);
-
-        if (result.affectedRows === 0) {
-            return null;
-        }
-
-        return { id, ...locationData };
-    } catch (err) {
-        console.error("Error updating location:", err);
-        throw { status: 500, message: "Failed to update location" };
-    } finally {
-        if (con) await db.disconnectFromDatabase(con);
-    }
+    return await db.updateLocationById(id, locationData);
 };
-
 
 export const deleteLocationById = async (id) => {
-    let con;
-    try {
-        con = await db.connectToDB();
-
-        const query = `
-            DELETE FROM locations
-            WHERE id = ?
-        `;
-
-        const [result] = await con.query(query, [id]);
-
-        if (result.affectedRows === 0) {
-            return false;
-        }
-
-        return true;
-    } catch (err) {
-        console.error("Error deleting location:", err);
-        throw { status: 500, message: "Failed to delete location" };
-    } finally {
-        if (con) await db.disconnectFromDatabase(con);
-    }
-};
+    return await db.deleteLocationById(id);
+}
