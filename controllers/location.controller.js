@@ -30,11 +30,17 @@ import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllLocations = async (req, res, next) => {
     try {
-        const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+        const { name, postal_code, canton_code } = req.query;
+
+        let limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+
         if (limit !== null && (!isValidInteger(limit) || limit <= 0)) {
             throw {status: 400, message: 'Limit must be a positive number.'};
         }
-        const locations = await getAllLocations(limit);
+
+        const filters = {name, postal_code, canton_code};
+        const locations = await getAllLocations(filters, limit);
+
         if (!locations || locations.length === 0) {
             throw {status: 404, message: 'No locations found.'};
         }

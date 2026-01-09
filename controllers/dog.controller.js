@@ -31,11 +31,17 @@ import {createServer} from "mysql2";
 
 export const fetchAllDogs = async (req, res, next) => {
     try {
-        const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+        const { name, sex, client_id } = req.query;
+
+        let limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+
         if (limit !== null && (!isValidInteger(limit) || limit <= 0)) {
             throw {status: 400, message: 'Limit must be a positive number.'};
         }
-        const dogs = await getAllDogs(limit);
+
+        const filters = {name, sex, client_id};
+        const dogs = await getAllDogs(filters, limit);
+
         if (!dogs || dogs.length === 0) {
             throw {status: 404, message: 'No dogs found.'};
         }
