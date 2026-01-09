@@ -79,17 +79,34 @@ const db = {
 
     },
 
-    getAllLocations: async (limit) => {
+    getAllLocations: async (filters = {}, limit = null) => {
         let con;
         try {
             con = await db.connectToDB();
             //the getAllLocalities function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM locations';
+            let request = 'SELECT * FROM locations where 1=1';
+            const params = [];
+
+            if (filters.name) {
+                request += " AND name like ?";
+                params.push(`%${filters.name}%`);
+            }
+
+            if (filters.postal_code) {
+                request += ` AND postal_code LIKE ?`;
+                params.push(filters.postal_code);
+            }
+
+            if (filters.canton_code) {
+                request += ` AND canton_code LIKE ?`;
+                params.push(filters.canton_code);
+            }
+
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
-            const [rows] = await con.query(request);
+            const [rows] = await con.query(request, params);
             return rows;
         } catch (err) {
             console.log(err);
