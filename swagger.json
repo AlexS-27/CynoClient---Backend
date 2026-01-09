@@ -64,6 +64,52 @@
       },
       "delete": { "tags": ["Clients"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Deleted" } } }
     },
+    "/clients/with-dogs": {
+      "get": {
+        "tags": ["Clients"],
+        "summary": "Get all clients with their associated dogs",
+        "description": "Returns a list of clients. Each client object includes an array of their dogs (if any).",
+        "responses": {
+          "200": {
+            "description": "A list of clients with their dogs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer", "example": 1 },
+                      "last_name": { "type": "string", "example": "Doe" },
+                      "first_name": { "type": "string", "example": "John" },
+                      "email": { "type": "string", "example": "john.doe@example.com" },
+                      "dogs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "integer", "example": 5 },
+                            "name": { "type": "string", "example": "Rex" },
+                            "sex": { "type": "string", "example": "M" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No clients found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+
     "/dogs": {
       "get": { "tags": ["Dogs"], "responses": { "200": { "description": "List of dogs" } } },
       "post": {

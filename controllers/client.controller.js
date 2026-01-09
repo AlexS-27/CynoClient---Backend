@@ -27,7 +27,7 @@ NOTES:
 
 // logique métier (validation des entrées, gestion des réponses HTTP)
 
-import {deleteClient, getAllClients, getClientById, insertClient, updateClient} from "../models/client.model.js";
+import {deleteClient, getAllClients, getClientById, insertClient, updateClient, getClientsWithDogs} from "../models/client.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllClients = async (req, res, next) => {
@@ -134,6 +134,37 @@ export const terminateClient = async (req, res, next) => {
         }
 
         res.status(200).json({ message: `Client with id ${id} successfully deleted.` });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const fetchClientsAndDogs = async (req, res, next) => {
+    try {
+        const data = await getClientsWithDogs();
+
+        // Optionnel : Regrouper les chiens par client dans un tableau
+        const clientsMap = {};
+        data.forEach(row => {
+            if (!clientsMap[row.id]) {
+                clientsMap[row.id] = {
+                    id: row.id,
+                    last_name: row.last_name,
+                    first_name: row.first_name,
+                    email: row.email,
+                    dogs: []
+                };
+            }
+            if (row.dog_id) {
+                clientsMap[row.id].dogs.push({
+                    id: row.dog_id,
+                    name: row.dog_name,
+                    sex: row.sex
+                });
+            }
+        });
+
+        res.status(200).json(Object.values(clientsMap));
     } catch (err) {
         next(err);
     }
