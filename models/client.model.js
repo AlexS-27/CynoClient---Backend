@@ -48,3 +48,7 @@ export const updateClient = async (id, clientData) => {
 export const deleteClient = async (id) => {
     return await db.deleteClient(id);
 }
+
+export const getClientsWithDogs = async () => {
+    return await db.getClientsWithDogs();
+}

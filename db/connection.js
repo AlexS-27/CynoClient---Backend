@@ -378,6 +378,30 @@ const db = {
         }
     },
 
+    getClientsWithDogs: async (clientId) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const query = `
+                SELECT 
+                    c.*, 
+                    d.id AS dog_id, d.name AS dog_name, d.sex, d.birthdate, d.sterilized
+                FROM clients c
+                LEFT JOIN dogs d ON c.id = d.client_id
+                ORDER BY c.id;
+            `;
+            const [rows] = await con.query(query);
+            return rows;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+
+
     disconnectFromDatabase: async (connection) => {
         try {
             await connection.end();
