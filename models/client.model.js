@@ -29,8 +29,8 @@ NOTES:
 
 import { db } from "../db/connection.js";
 
-export const getAllClients = async (limit = null) => {
-    return await db.getAllClients(limit);
+export const getAllClients = async (filters, limit = null) => {
+    return await db.getAllClients(filters, limit);
 };
 
 export const getClientById = async (id) => {

@@ -40,9 +40,20 @@
     "/clients": {
       "get": {
         "tags": ["Clients"],
-        "summary": "Get all clients",
-        "parameters": [{ "name": "limit", "in": "query", "schema": { "type": "integer" } }],
-        "responses": { "200": { "description": "List of clients" } }
+        "summary": "Retrieve all clients",
+        "description": "Fetches a list of clients with optional filtering and limiting.",
+        "parameters": [
+          { "name": "last_name", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "first_name", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "gender", "in": "query", "required": false, "schema": { "type": "string", "enum": ["M", "F", "O"] } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of clients",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Client" } } } }
+          }
+        }
       },
       "post": {
         "tags": ["Clients"],
@@ -55,23 +66,33 @@
       }
     },
     "/clients/{id}": {
-      "get": { "tags": ["Clients"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Success" } } },
+      "get": {
+        "tags": ["Clients"],
+        "summary": "Get client by ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Success" } }
+      },
       "put": {
         "tags": ["Clients"],
+        "summary": "Update client",
         "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
         "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Client" } } } },
         "responses": { "200": { "description": "Updated" } }
       },
-      "delete": { "tags": ["Clients"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Deleted" } } }
+      "delete": {
+        "tags": ["Clients"],
+        "summary": "Delete client",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Deleted" } }
+      }
     },
     "/clients/with-dogs": {
       "get": {
         "tags": ["Clients"],
         "summary": "Get all clients with their associated dogs",
-        "description": "Returns a list of clients. Each client object includes an array of their dogs (if any).",
         "responses": {
           "200": {
-            "description": "A list of clients with their dogs.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -79,41 +100,34 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "integer", "example": 1 },
-                      "last_name": { "type": "string", "example": "Doe" },
-                      "first_name": { "type": "string", "example": "John" },
-                      "email": { "type": "string", "example": "john.doe@example.com" },
-                      "dogs": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": { "type": "integer", "example": 5 },
-                            "name": { "type": "string", "example": "Rex" },
-                            "sex": { "type": "string", "example": "M" }
-                          }
-                        }
-                      }
+                      "id": { "type": "integer" },
+                      "last_name": { "type": "string" },
+                      "first_name": { "type": "string" },
+                      "dogs": { "type": "array", "items": { "$ref": "#/components/schemas/Dog" } }
                     }
                   }
                 }
               }
             }
-          },
-          "404": {
-            "description": "No clients found."
-          },
-          "500": {
-            "description": "Internal server error."
           }
         }
       }
     },
-
     "/dogs": {
-      "get": { "tags": ["Dogs"], "responses": { "200": { "description": "List of dogs" } } },
+      "get": {
+        "tags": ["Dogs"],
+        "summary": "Get all dogs with optional filters",
+        "parameters": [
+          { "name": "name", "in": "query", "schema": { "type": "string" } },
+          { "name": "sex", "in": "query", "schema": { "type": "string", "enum": ["M", "F"] } },
+          { "name": "client_id", "in": "query", "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "List of dogs" } }
+      },
       "post": {
         "tags": ["Dogs"],
+        "summary": "Create a new dog",
         "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Dog" } } } },
         "responses": { "201": { "description": "Dog created" } }
       }
@@ -121,16 +135,27 @@
     "/dogs/{id}": {
       "patch": {
         "tags": ["Dogs"],
+        "summary": "Partial update of a dog",
         "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
         "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "name": { "type": "string" } } } } } },
         "responses": { "200": { "description": "Updated" } }
       },
-      "delete": { "tags": ["Dogs"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Deleted" } } }
+      "delete": {
+        "tags": ["Dogs"],
+        "summary": "Delete a dog",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Deleted" } }
+      }
     },
     "/services": {
-      "get": { "tags": ["Services"], "responses": { "200": { "description": "List of services" } } },
+      "get": {
+        "tags": ["Services"],
+        "summary": "Get all services",
+        "responses": { "200": { "description": "List of services" } }
+      },
       "post": {
         "tags": ["Services"],
+        "summary": "Create a service",
         "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Service" } } } },
         "responses": { "201": { "description": "Service created" } }
       }
@@ -138,11 +163,17 @@
     "/services/{id}": {
       "patch": {
         "tags": ["Services"],
+        "summary": "Update a service",
         "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
         "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Service" } } } },
         "responses": { "200": { "description": "Updated" } }
       },
-      "delete": { "tags": ["Services"], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Deleted" } } }
+      "delete": {
+        "tags": ["Services"],
+        "summary": "Delete a service",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "Deleted" } }
+      }
     },
     "/locations": {
       "get": {
@@ -164,19 +195,20 @@
     "/locations/{id}": {
       "get": {
         "tags": ["Locations"],
+        "summary": "Get location by ID",
         "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
         "responses": { "200": { "description": "Success" } }
       },
       "put": {
         "tags": ["Locations"],
+        "summary": "Update location",
         "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
-        "requestBody": {
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Location" } } }
-        },
+        "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Location" } } } },
         "responses": { "200": { "description": "Location updated" } }
       },
       "delete": {
         "tags": ["Locations"],
+        "summary": "Delete location",
         "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
         "responses": { "200": { "description": "Location deleted" } }
       }
