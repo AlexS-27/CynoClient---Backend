@@ -351,32 +351,66 @@
     },
     "/services": {
       "get": {
-        "tags": [
-          "Services"
+        "tags": ["Services"],
+        "summary": "Get all services with optional filters",
+        "description": "Retrieve services. You can filter by date, dog ID, or location ID.",
+        "parameters": [
+          {
+            "name": "service_date",
+            "in": "query",
+            "description": "Filter by date (format YYYY-MM-DD)",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "dog_id",
+            "in": "query",
+            "description": "Filter by a specific dog ID",
+            "required": false,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "location_id",
+            "in": "query",
+            "description": "Filter by a specific location ID",
+            "required": false,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit the number of services returned",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1 }
+          }
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "A list of services",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Service" }
+                }
+              }
+            }
           }
         }
       },
       "post": {
-        "tags": [
-          "Services"
-        ],
+        "tags": ["Services"],
+        "summary": "Create a new service",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Service"
-              }
+              "schema": { "$ref": "#/components/schemas/Service" }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "Created"
-          }
+          "201": { "description": "Service created successfully" }
         }
       }
     },

@@ -28,11 +28,11 @@ NOTES:
 import {isValidInteger} from "../utils/helper.mjs";
 import { db } from "../db/connection.js";
 
-export const getAllServices = async (limit = null) => {
+export const getAllServices = async (filters, limit = null) => {
     if (!db.connectToDB()) {
         throw { status: 503, message: "Database unavailable."}
     }
-    return await db.getAllServices(limit);
+    return await db.getAllServices(filters, limit);
 };
 
 export const getServiceById = async (id) => {
