@@ -26,15 +26,30 @@ NOTES:
     - This file only defines routes; no business logic is implemented here.
 */
 
+// définit les chemins/endpoints et les lie aux contrôleurs
+
 import express from "express";
-import { fetchAllClients, fetchClientById, createClient } from "../controllers/client.controller.js";
+import {
+    fetchAllClients,
+    fetchClientById,
+    createClient,
+    modifyClient,
+    terminateClient,
+    fetchClientsAndDogs
+} from "../controllers/client.controller.js";
 
 const router = express.Router();
+
+router.get("/with-dogs", fetchClientsAndDogs);
 
 router.get("/", fetchAllClients);
 
 router.get("/:id", fetchClientById);
 
 router.post("/", createClient);
+
+router.put("/:id", modifyClient);
+
+router.delete("/:id", terminateClient);
 
 export default router;

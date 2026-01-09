@@ -30,10 +30,22 @@ NOTES:
 
 import { db } from "../db/connection.js";
 
-export const getAllLocations = async (limit = null) => {
-    return await db.getAllLocations(limit);
+export const getAllLocations = async (filters, limit = null) => {
+    return await db.getAllLocations(filters, limit);
 };
 
 export const getLocationById = async (id) => {
     return await db.getLocationById(id);
 };
+
+export const createLocation = async (locationData) => {
+    return await db.createLocation(locationData);
+};
+
+export const updateLocationById = async (id, locationData) => {
+    return await db.updateLocationById(id, locationData);
+};
+
+export const deleteLocationById = async (id) => {
+    return await db.deleteLocationById(id);
+}

@@ -25,16 +25,22 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllLocations, getLocationById } from "../models/location.model.js";
+import { getAllLocations, getLocationById, createLocation, updateLocationById, deleteLocationById } from "../models/location.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllLocations = async (req, res, next) => {
     try {
-        const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+        const { name, postal_code, canton_code } = req.query;
+
+        let limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+
         if (limit !== null && (!isValidInteger(limit) || limit <= 0)) {
             throw {status: 400, message: 'Limit must be a positive number.'};
         }
-        const locations = await getAllLocations(limit);
+
+        const filters = {name, postal_code, canton_code};
+        const locations = await getAllLocations(filters, limit);
+
         if (!locations || locations.length === 0) {
             throw {status: 404, message: 'No locations found.'};
         }
@@ -57,6 +63,91 @@ export const fetchLocationById = async (req, res, next) => {
         }
 
         res.status(200).json(location);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const postLocation = async (req, res, next) => {
+    try {
+        const { name, postal_code, postal_code_extra, toponym, canton_code, lang_code } = req.body;
+
+        //Validation
+        if (!name || !postal_code || !toponym || !canton_code || !lang_code) {
+            throw { status: 400, message: "Missing required fields" };
+        }
+
+        const newLocation = await createLocation({
+            name,
+            postal_code,
+            postal_code_extra: postal_code_extra || null,
+            toponym,
+            canton_code,
+            lang_code
+        });
+
+        res.status(201).json(newLocation);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateLocation = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (!isValidInteger(id)) {
+            throw { status: 400, message: "Invalid id" };
+        }
+
+        const {
+            name,
+            postal_code,
+            postal_code_extra,
+            toponym,
+            canton_code,
+            lang_code
+        } = req.body;
+
+        if (!name || !postal_code || !toponym || !canton_code || !lang_code) {
+            throw { status: 400, message: "Missing required fields" };
+        }
+
+        const updatedLocation = await updateLocationById(id, {
+            name,
+            postal_code,
+            postal_code_extra: postal_code_extra || null,
+            toponym,
+            canton_code,
+            lang_code
+        });
+
+        if (!updatedLocation) {
+            throw { status: 404, message: "Location not found" };
+        }
+
+        res.status(200).json(updatedLocation);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+export const deleteLocation = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (!isValidInteger(id)) {
+            throw { status: 400, message: "Invalid id" };
+        }
+
+        const deleted = await deleteLocationById(id);
+
+        if (!deleted) {
+            throw { status: 404, message: "Location not found" };
+        }
+
+        res.status(204).send();
     } catch (error) {
         next(error);
     }

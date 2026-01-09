@@ -63,6 +63,12 @@ const db = {
                 port: process.env.DB_PORT,
                 database: process.env.DB_NAME, //database name
             });
+            console.log('DB_HOST:', process.env.DB_HOST);
+            console.log('DB_USER:', process.env.DB_USER);
+            console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
+            console.log('DB_NAME:', process.env.DB_NAME);
+
+
             console.log("Connected to DB");
             return connection;
         } catch (error) {
@@ -73,17 +79,34 @@ const db = {
 
     },
 
-    getAllLocations: async (limit) => {
+    getAllLocations: async (filters = {}, limit = null) => {
         let con;
         try {
             con = await db.connectToDB();
             //the getAllLocalities function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM locations';
+            let request = 'SELECT * FROM locations where 1=1';
+            const params = [];
+
+            if (filters.name) {
+                request += " AND name like ?";
+                params.push(`%${filters.name}%`);
+            }
+
+            if (filters.postal_code) {
+                request += ` AND postal_code LIKE ?`;
+                params.push(filters.postal_code);
+            }
+
+            if (filters.canton_code) {
+                request += ` AND canton_code LIKE ?`;
+                params.push(filters.canton_code);
+            }
+
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
-            const [rows] = await con.query(request);
+            const [rows] = await con.query(request, params);
             return rows;
         } catch (err) {
             console.log(err);
@@ -93,17 +116,34 @@ const db = {
         }
     },
 
-    getAllServices: async (limit) => {
+    getAllServices: async (filters, limit) => {
         let con;
         try {
             con = await db.connectToDB();
             //the getAllServices function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM services';
+            let request = 'SELECT * FROM services where 1=1';
+            const params = [];
+
+            if (filters.dog_id) {
+                request += " AND dog_id = ?";
+                params.push(filters.dog_id);
+            }
+
+            if (filters.location_id) {
+                request += ` AND location_id = ?`;
+                params.push(filters.location_id);
+            }
+
+            if (filters.duration_minutes) {
+                request += ` AND duration_minutes = ?`;
+                params.push(filters.duration_minutes);
+            }
+
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
-            const [rows] = await con.query(request);
+            const [rows] = await con.query(request, params);
             return rows;
         } catch (err) {
             console.log(err);
@@ -113,17 +153,35 @@ const db = {
         }
     },
 
-    getAllDogs: async (limit) => {
+    getAllDogs: async (filters = {},limit = null) => {
         let con;
         try {
             con = await db.connectToDB();
             //the getAllDogs function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM dogs';
+            let request = 'SELECT * FROM dogs where 1=1';
+            const params = [];
+
+            // Construct where
+            if (filters.name) {
+                request += " AND name like ?";
+                params.push(`%${filters.name}%`);
+            }
+
+            if (filters.sex) {
+                request += ` AND sex = ?`;
+                params.push(filters.sex);
+            }
+
+            if (filters.client_id) {
+                request += ` AND client_id = ?`;
+                params.push(filters.client_id);
+            }
+
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
-            const [rows] = await con.query(request);
+            const [rows] = await con.query(request, params);
             return rows;
         } catch (err) {
             console.log(err);
@@ -133,17 +191,34 @@ const db = {
         }
     },
 
-    getAllClients: async (limit) => {
+    getAllClients: async (filters={},limit = null) => {
         let con;
         try {
             con = await db.connectToDB();
             //the getAllClients function waits until the query is finished to execute
             //if there is some code after the call of this function, it will be executed without waiting the execution of this function
-            let request = 'SELECT * FROM clients';
+            let request = 'SELECT * FROM clients where 1=1';
+            const params = [];
+
+            if (filters.last_name) {
+                request += " AND last_name like ?";
+                params.push(`%${filters.last_name}%`);
+            }
+
+            if (filters.gender) {
+                request += ` AND gender = ?`;
+                params.push(filters.gender);
+            }
+
+            if (filters.first_name) {
+                request += ` AND first_name like ?`;
+                params.push(`%${filters.first_name}%`);
+            }
+
             if (limit != null) {
                 request = `${request} limit ${limit}`;
             }
-            const [rows] = await con.query(request);
+            const [rows] = await con.query(request, params);
             return rows;
         } catch (err) {
             console.log(err);
@@ -208,6 +283,28 @@ const db = {
             if (con) {await db.disconnectFromDatabase(con); }
         }
     },
+    createService: async (dog_id, service_date, location_id, duration_minutes) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const [result] = await con.query(
+                'INSERT INTO services (dog_id, service_date, location_id, duration_minutes) VALUES (?, ?, ?, ?)',
+                [dog_id, service_date, location_id, duration_minutes]
+            );
+            return {
+                id: result.insertId,
+                dog_id,
+                service_date,
+                location_id,
+                duration_minutes
+            };
+        } catch (err) {
+            console.error(err);
+            throw { status: 500, message: "Failed to create service." };
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+        },
 
     // insertId taken from AI
     insertClient: async (clientData) => {
@@ -238,6 +335,289 @@ const db = {
         }
     },
 
+    insertDog: async (dogData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+
+            const sql = `INSERT INTO dogs (name, sex, cross_breed, birthdate, sterilized, deceased, client_id, breed_id)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+            const values = [
+                dogData.name,
+                dogData.sex,
+                dogData.cross_breed,
+                dogData.birthdate,
+                dogData.sterilized,
+                dogData.deceased,
+                dogData.client_id,
+                dogData.breed_id,
+            ];
+
+            const [result] = await con.execute(sql, values);
+
+            return result.insertId;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) {await db.disconnectFromDatabase(con); }
+        }
+    },
+
+    updateService: async (id, serviceData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+
+            //récupération des données à mettre à jour
+            const keys = Object.keys(serviceData);
+            if (keys.length === 0) return null;
+
+            // construction des requêtes dynamique
+            const setClause = keys.map(key => `${key} = ?`).join(',');
+            const values = Object.values(serviceData);
+            values.push(id); //Ajout de l'id pour WHERE
+
+            const sql = `UPDATE services SET ${setClause} WHERE id = ?`;
+            const [result] = await con.execute(sql, values);
+
+            return result.affectedRows > 0;
+        }catch(err) {
+            console.error(err);
+            throw err;
+        }finally {
+            if (con) {await db.disconnectFromDatabase(con); }
+        }
+    },
+
+    updateClient: async (id, clientData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = `UPDATE clients SET last_name = ?, first_name = ?, gender = ?, email = ?, phone_number = ?, postal_address = ?
+               WHERE id = ?`;
+            const values = [
+                clientData.last_name,
+                clientData.first_name,
+                clientData.gender,
+                clientData.email,
+                clientData.phone_number,
+                clientData.postal_address,
+                id
+            ];
+            const [result] = await con.execute(sql, values);
+            return result.affectedRows; // return the amount of modified lines
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    updateDog: async (id, dogData) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            // Filtre pour ignorer les valeurs 'undefined'
+            const keys = Object.keys(dogData).filter(key => dogData[key] !== undefined);
+
+            if (keys.length === 0) return 0;
+            // Construction dynamique pour le SET
+            const setClause = keys.map(key => `${key} = ?`).join(', ');
+            // Attribution des valeurs correspondantes
+            const values = keys.map(key => {
+                // Conversion spécifique pour les bool
+                if (['cross_breed', 'sterilized', 'deceased'].includes(key)) {
+                    return dogData[key] ? 1 : 0;
+                }
+                return dogData[key];
+            });
+
+            values.push(id);
+
+            const sql = `UPDATE dogs SET ${setClause} WHERE id = ?`;
+            const [result] = await con.execute(sql, values);
+            return result.affectedRows; // return the amount of modified lines
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    deleteService: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'DELETE FROM services WHERE id = ?';
+            const [result] = await con.execute(sql, [id]);
+
+            // Returns true if a row was deleted, false otherwise
+            return result.affectedRows > 0;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    deleteClient: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const [result] = await con.execute('DELETE FROM clients WHERE id = ?', [id])
+            return result.affectedRows;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    deleteDog: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const [result] = await con.execute('DELETE FROM dogs WHERE id = ?', [id])
+            return result.affectedRows;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    getClientsWithDogs: async (clientId) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const query = `
+                SELECT 
+                    c.*, 
+                    d.id AS dog_id, d.name AS dog_name, d.sex, d.birthdate, d.sterilized
+                FROM clients c
+                LEFT JOIN dogs d ON c.id = d.client_id
+                ORDER BY c.id;
+            `;
+            const [rows] = await con.query(query);
+            return rows;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    createLocation : async (locationData) => {
+        const { name, postal_code, postal_code_extra, toponym, canton_code, lang_code } = locationData;
+        let con;
+        try {
+            con = await db.connectToDB();
+            const query = `
+            INSERT INTO locations 
+            (name, postal_code, postal_code_extra, toponym, canton_code, lang_code)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+            const [result] = await con.query(query, [
+                name,
+                postal_code,
+                postal_code_extra || null,
+                toponym,
+                canton_code,
+                lang_code
+            ]);
+            // Retourne l'ID de la nouvelle entrée
+            return { id: result.insertId, ...locationData };
+        } catch (err) {
+            console.error("Error creating location:", err);
+            throw { status: 500, message: "Failed to create location" };
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+    updateLocationById : async (id, locationData) => {
+        const {
+            name,
+            postal_code,
+            postal_code_extra,
+            toponym,
+            canton_code,
+            lang_code
+        } = locationData;
+
+        let con;
+        try {
+            con = await db.connectToDB();
+
+            const query = `
+            UPDATE locations
+            SET
+                name = ?,
+                postal_code = ?,
+                postal_code_extra = ?,
+                toponym = ?,
+                canton_code = ?,
+                lang_code = ?
+            WHERE id = ?
+        `;
+
+            const [result] = await con.query(query, [
+                name,
+                postal_code,
+                postal_code_extra,
+                toponym,
+                canton_code,
+                lang_code,
+                id
+            ]);
+
+            if (result.affectedRows === 0) {
+                return null;
+            }
+
+            return { id, ...locationData };
+        } catch (err) {
+            console.error("Error updating location:", err);
+            throw { status: 500, message: "Failed to update location" };
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
+
+    deleteLocationById : async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+
+            const query = `
+            DELETE FROM locations
+            WHERE id = ?
+        `;
+
+            const [result] = await con.query(query, [id]);
+
+            if (result.affectedRows === 0) {
+                return false;
+            }
+
+            return true;
+        } catch (err) {
+            console.error("Error deleting location:", err);
+            throw { status: 500, message: "Failed to delete location" };
+        } finally {
+            if (con) await db.disconnectFromDatabase(con);
+        }
+    },
+
     disconnectFromDatabase: async (connection) => {
         try {
             await connection.end();
@@ -246,7 +626,7 @@ const db = {
             console.error('Encountered an error while disconnecting from database :', error);
             throw error;
         }
-    }
+    },
 }
 
 export { db }

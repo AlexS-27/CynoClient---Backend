@@ -2,7 +2,7 @@
 FILE          : dog.model.js
 AUTHOR        : Niels Delafontaine
 DATE CREATED  : 14.11.2025
-LAST MODIFIED : 21.11.2025
+LAST MODIFIED : 12.12.2025
 DESCRIPTION   :
     Data model for dog-related operations.
     Provides database access methods to retrieve dogs or a single dog
@@ -28,10 +28,21 @@ NOTES:
 
 import { db } from "../db/connection.js";
 
-export const getAllDogs = async (limit = null) => {
-    return await db.getAllDogs(limit);
+export const getAllDogs = async (filters,limit = null) => {
+    return await db.getAllDogs(filters, limit);
 };
 
 export const getDogById = async (id) => {
     return await db.getDogById(id);
 };
+
+export const insertDog = async (dogData) => {
+    return await db.insertDog(dogData);
+}
+export const updateDog = async (id, dogData) => {
+    return await db.updateDog(id, dogData);
+}
+
+export const deleteDog = async (id) => {
+    return await db.deleteDog(id);
+}

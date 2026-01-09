@@ -39,6 +39,15 @@ NOTES:
     - JSON parsing middleware enabled globally.
 */
 
+//swagger
+import swaggerUi from "swagger-ui-express";
+import path from "path";
+import fs from "fs";
+
+//chargement fichier JSON
+const swaggerDocument = JSON.parse(
+    fs.readFileSync(new URL("./swagger.json", import.meta.url))
+);
 
 import "dotenv/config";
 import express from "express";
@@ -48,8 +57,13 @@ import locationRoutes from "./routes/location.routes.js";
 import serviceRoutes from "./routes/service.routes.js";
 import allRoutes from "./routes/all.routes.js";
 
+// point d'entrée du programme, configure le serveur et le middleware de gestion d'erreurs
+
 const app = express();
 app.use(express.json());
+
+// route SWAGGER
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // routes
 app.use("/clients", clientRoutes);
@@ -78,4 +92,5 @@ app.use((err, req, res, next) => {
 // start the server
 app.listen(3000, () => {
     console.log("Server running on http://localhost:3000");
+    console.log(`Swagger Docs available on http://localhost:3000/api-docs`);
 });

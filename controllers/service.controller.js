@@ -25,16 +25,22 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllServices, getServiceById } from "../models/service.model.js";
+import { getAllServices, getServiceById, createService, updateService, deleteService} from "../models/service.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllServices = async (req, res, next) => {
     try {
-        const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+        const { dog_id, location_id, duration_minutes } = req.query;
+
+        let limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+
         if (limit !== null && (!isValidInteger(limit) || limit <= 0)) {
             throw {status: 400, message: 'Limit must be a positive number.'};
         }
-        const services = await getAllServices(limit);
+
+        const filters = {dog_id, location_id, duration_minutes};
+        const services = await getAllServices(filters, limit);
+
         if (!services || services.length === 0) {
             throw {status: 404, message: 'No services found.'};
         }
@@ -57,6 +63,67 @@ export const fetchServiceById = async (req, res, next) => {
         }
 
         res.status(200).json(service);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const fetchCreateService = async (req, res, next) => {
+    try {
+        const serviceData = req.body;
+        const newService = await createService(serviceData);
+
+        res.status(201).json({
+            status: 201,
+            message: "Service created successfully.",
+            data: newService
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const patchService = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const serviceData = req.body;
+
+        // Validation de l'ID via ton helper
+        if (!isValidInteger(id)) {
+            throw { status: 400, message: "Invalid service ID." };
+        }
+
+        // Appel au modèle pour la mise à jour
+        const updatedService = await updateService(id, serviceData);
+
+        res.status(200).json({
+            status: 200,
+            message: "Service updated successfully.",
+            data: updatedService
+        });
+    } catch (error) {
+        // Le middleware d'erreur centralisé s'occupe du reste
+        next(error);
+    }
+};
+
+export const fetchDeleteService = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        // Validation
+        if (!isValidInteger(id)) {
+            throw { status: 400, message: "Invalid service ID." };
+        }
+
+        // Call the model
+        await deleteService(id);
+
+        // Success response
+        res.status(200).json({
+            status: 200,
+            message: `Service with ID ${id} deleted successfully.`
+        });
     } catch (error) {
         next(error);
     }

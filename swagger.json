@@ -1,0 +1,722 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CynoClient API Documentation",
+    "version": "1.0.0",
+    "description": "API logicielle pour la gestion d'éducation canine (Clients, Chiens, Services et Lieux).",
+    "contact": {
+      "name": "Niels D., Kilian T., Alexandre R., Alex K."
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Serveur local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Global",
+      "description": "Endpoints multi-tables"
+    },
+    {
+      "name": "Clients",
+      "description": "Gestion des propriétaires"
+    },
+    {
+      "name": "Dogs",
+      "description": "Gestion des chiens"
+    },
+    {
+      "name": "Locations",
+      "description": "Gestion des lieux d'entraînement"
+    },
+    {
+      "name": "Services",
+      "description": "Gestion des prestations/rendez-vous"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Global"
+        ],
+        "summary": "Fetch all resources",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "tags": [
+          "Global"
+        ],
+        "summary": "Fetch by ID across all tables",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/clients": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Retrieve all clients",
+        "parameters": [
+          {
+            "name": "last_name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "first_name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "M",
+                "F",
+                "O"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Create a new client",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/clients/{id}": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Clients"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Clients"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          }
+        }
+      }
+    },
+    "/clients/with-dogs": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Get all clients with their associated dogs",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/dogs": {
+      "get": {
+        "tags": [
+          "Dogs"
+        ],
+        "summary": "Get all dogs",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sex",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "M",
+                "F"
+              ]
+            }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Dogs"
+        ],
+        "summary": "Create a new dog",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Dog"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/dogs/{id}": {
+      "patch": {
+        "tags": [
+          "Dogs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Dogs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          }
+        }
+      }
+    },
+    "/services": {
+      "get": {
+        "tags": ["Services"],
+        "summary": "Get all services with optional filters",
+        "description": "Retrieve services. You can filter by date, dog ID, or location ID.",
+        "parameters": [
+          {
+            "name": "service_date",
+            "in": "query",
+            "description": "Filter by date (format YYYY-MM-DD)",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "dog_id",
+            "in": "query",
+            "description": "Filter by a specific dog ID",
+            "required": false,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "location_id",
+            "in": "query",
+            "description": "Filter by a specific location ID",
+            "required": false,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit the number of services returned",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of services",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Service" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Services"],
+        "summary": "Create a new service",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Service" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Service created successfully" }
+        }
+      }
+    },
+    "/services/{id}": {
+      "patch": {
+        "tags": [
+          "Services"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Service"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Services"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          }
+        }
+      }
+    },
+    "/locations": {
+      "get": {
+        "tags": ["Locations"],
+        "summary": "Get all locations with filters",
+        "description": "Retrieve locations. Use query parameters to filter by name, postal code or canton.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter by location name",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "postal_code",
+            "in": "query",
+            "description": "Filter by postal code",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "canton_code",
+            "in": "query",
+            "description": "Filter by canton (ex: VD, GE, VS)",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of results to return",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Location" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Locations"],
+        "summary": "Create location",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Location" } } }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/locations/{id}": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Locations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Location"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Locations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Client": {
+        "type": "object",
+        "required": [
+          "last_name",
+          "first_name",
+          "gender",
+          "email",
+          "phone_number",
+          "postal_address"
+        ],
+        "properties": {
+          "last_name": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "M",
+              "F",
+              "O"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "postal_address": {
+            "type": "string"
+          }
+        }
+      },
+      "Dog": {
+        "type": "object",
+        "required": [
+          "name",
+          "sex",
+          "birthdate"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string",
+            "enum": [
+              "M",
+              "F"
+            ]
+          },
+          "birthdate": {
+            "type": "string",
+            "format": "date"
+          },
+          "client_id": {
+            "type": "integer",
+            "nullable": true
+          },
+          "breed_id": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "Service": {
+        "type": "object",
+        "properties": {
+          "dog_id": {
+            "type": "integer"
+          },
+          "service_date": {
+            "type": "string",
+            "example": "2025-11-21 14:00:00"
+          },
+          "location_id": {
+            "type": "integer"
+          },
+          "duration_minutes": {
+            "type": "integer"
+          }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "required": [
+          "name",
+          "postal_code",
+          "toponym",
+          "canton_code",
+          "lang_code"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "integer"
+          },
+          "postal_code_extra": {
+            "type": "integer",
+            "nullable": true
+          },
+          "toponym": {
+            "type": "string"
+          },
+          "canton_code": {
+            "type": "string",
+            "maxLength": 2
+          },
+          "lang_code": {
+            "type": "string",
+            "maxLength": 2
+          }
+        }
+      }
+    }
+  }
+}

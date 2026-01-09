@@ -25,16 +25,23 @@ NOTES:
     - Input validation is handled using isValidInteger from helper.mjs.
 */
 
-import { getAllClients, getClientById, insertClient } from "../models/client.model.js";
+// logique métier (validation des entrées, gestion des réponses HTTP)
+
+import {deleteClient, getAllClients, getClientById, insertClient, updateClient, getClientsWithDogs} from "../models/client.model.js";
 import { isValidInteger } from "../utils/helper.mjs"
 
 export const fetchAllClients = async (req, res, next) => {
     try {
-        const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+        const { last_name, first_name, gender} = req.query;
+
+        let limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
+
         if (limit !== null && (!isValidInteger(limit) || limit <= 0)) {
             throw {status: 400, message: 'Limit must be a positive number.'};
         }
-        const clients = await getAllClients(limit);
+        const filters = {last_name, first_name, gender};
+        const clients = await getAllClients(filters, limit);
+
         if (!clients || clients.length === 0) {
             throw {status: 404, message: 'No clients found.'};
         }
@@ -91,4 +98,79 @@ export const createClient = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-}
+};
+
+export const modifyClient = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const clientData = req.body;
+
+        if (!isValidInteger(id)) {
+            throw {status: 400, message: "Invalid id"};
+        }
+
+        // validation
+        if (!clientData.last_name || !clientData.first_name || !clientData.gender || !clientData.email || !clientData.phone_number || !clientData.postal_address) {
+            throw {status: 400, message: 'Please fill in all required fields.'}
+        }
+
+        const affectedRows = await updateClient(id, clientData);
+        if (affectedRows === 0) {
+            throw {status: 404, message: 'Client not found or no changes made.'};
+        }
+
+        res.status(200).json({ id, ...clientData, message: 'Client successfully updated.' });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const terminateClient = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (!isValidInteger(id)) {
+            throw {status: 400, message: "Invalid id"};
+        }
+
+        const affectedRows = await deleteClient(id);
+        if (affectedRows === 0) {
+            throw {status: 404, message: 'Client not found.'};
+        }
+
+        res.status(200).json({ message: `Client with id ${id} successfully deleted.` });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const fetchClientsAndDogs = async (req, res, next) => {
+    try {
+        const data = await getClientsWithDogs();
+
+        // Optionnel : Regrouper les chiens par client dans un tableau
+        const clientsMap = {};
+        data.forEach(row => {
+            if (!clientsMap[row.id]) {
+                clientsMap[row.id] = {
+                    id: row.id,
+                    last_name: row.last_name,
+                    first_name: row.first_name,
+                    email: row.email,
+                    dogs: []
+                };
+            }
+            if (row.dog_id) {
+                clientsMap[row.id].dogs.push({
+                    id: row.dog_id,
+                    name: row.dog_name,
+                    sex: row.sex
+                });
+            }
+        });
+
+        res.status(200).json(Object.values(clientsMap));
+    } catch (err) {
+        next(err);
+    }
+};

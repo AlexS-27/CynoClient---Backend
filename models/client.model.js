@@ -27,10 +27,12 @@ NOTES:
     - Errors are thrown as objects with {status, message} to integrate with controllers.
 */
 
+// fait le lien entre les contrôleurs et la database
+
 import { db } from "../db/connection.js";
 
-export const getAllClients = async (limit = null) => {
-    return await db.getAllClients(limit);
+export const getAllClients = async (filters, limit = null) => {
+    return await db.getAllClients(filters, limit);
 };
 
 export const getClientById = async (id) => {
@@ -39,4 +41,16 @@ export const getClientById = async (id) => {
 
 export const insertClient = async (clientData) => {
     return await db.insertClient(clientData);
+}
+
+export const updateClient = async (id, clientData) => {
+    return await db.updateClient(id, clientData);
+}
+
+export const deleteClient = async (id) => {
+    return await db.deleteClient(id);
+}
+
+export const getClientsWithDogs = async () => {
+    return await db.getClientsWithDogs();
 }
