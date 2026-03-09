@@ -1,0 +1,13 @@
+name: Récupération de variable
+on:
+  push:
+    branches:
+      - main
+jobs:
+  mon-job:
+    runs-on: ubuntu-latest
+    env:
+      PRENOM: "Kilian"
+    steps:
+      - name: Salutation personnalisée
+        run: echo "Bonjour $PRENOM, bienvenue dans le module ICT324"
