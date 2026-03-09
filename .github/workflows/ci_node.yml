@@ -1,0 +1,28 @@
+name: ci_node
+on:
+  push:
+    branches: [feature/gitActions]
+
+jobs:
+  full_workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: feature/gitActions
+
+      - name: Install Node.js v.18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Lancer les tests
+        run: echo "Running tests..."
+
+

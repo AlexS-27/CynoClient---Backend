@@ -1,3 +1,6 @@
+#Ne prend en considération que si le fichier a été modifié durant le dernier push
+#Si non il le valide comme étant correct malgrès les erreurs
+
 name: linter
 on:
   push:
