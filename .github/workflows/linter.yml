@@ -8,21 +8,26 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    env:
-      # Désactive tout les language par défault
-      VALIDATE_ALL_CODEBASE: false
-
-      #Active uniquement le javascript (ESLint
-      VALIDATE_JAVASCRIPT_ESLINT: true
-
-      # Test qu'un fichier spécifique
-      FILTER_REGEX_INCLUDE: .test.js
-
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          #récupère tout l'historique pour permettre la comparaison des fichiers
+          fetch-depth: 0
+          #Force la récupération sur une branche spécifique
+          ref: feature/gitActions
 
       - name: Super-Linter
         uses: super-linter/super-linter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+          DEFAULT_BRANCH: feature/gitActions
+
+          # Désactive tout les language par défault
+          VALIDATE_ALL_CODEBASE: false
+          #Active uniquement le javascript (ESLint
+          VALIDATE_JAVASCRIPT_ESLINT: true
+          # Test qu'un fichier spécifique
+          FILTER_REGEX_INCLUDE: .*test\.js
