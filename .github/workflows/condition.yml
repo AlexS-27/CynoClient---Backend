@@ -1,0 +1,13 @@
+name: condition
+on: push
+
+jobs:
+  si_seulement:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulation de test
+        run: echo "Test OK"
+
+      - name: Déploiement en cours
+        if: github.ref_name == 'feature/gitActions'
+        run: echo "Déploiement en cours..."
