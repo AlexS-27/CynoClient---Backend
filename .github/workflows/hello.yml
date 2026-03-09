@@ -1,5 +1,5 @@
 # Nom du workflow (apparaîtra dans l'onglet Actions de GitHub)
-name: Second Workflow
+name: Third Workflow
 
 # Déclencheur : quand exécuter ce workflow ?
 # [push] signifie "à chaque push sur n'importe quelle branche"
@@ -19,7 +19,7 @@ jobs:
 
       # Première étape : afficher un message
       - name: Etape 1
-      - run: echo "Bonjour classe ICT324 !"
+        run: echo "Bonjour classe ICT324 !"
 
       # Deuxième étape : afficher un autre message
       - name: Etape 2
