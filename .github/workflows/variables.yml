@@ -1,0 +1,13 @@
+name: variables
+on:
+  push:
+    branches: [feature/gitActions]
+
+jobs:
+  mon_job:
+    runs-on: ubuntu-latest
+    env:
+      PRENOM: "ALex"
+    steps:
+      - name: Salutation personnalisée
+        run: echo "Bonjour $PRENOM, bienvenue dans le module ICT324"
