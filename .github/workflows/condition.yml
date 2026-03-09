@@ -1,0 +1,15 @@
+name: Condition
+on:
+  push:
+    branches:
+      - main
+jobs:
+  mon-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simuler un test
+        run: echo "Test OK"
+
+      - name: Déploiement
+        if: github.ref == 'refs/heads/main'
+        run: echo "Déploiement en cours..."
