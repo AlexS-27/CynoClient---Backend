@@ -11,12 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
   # Liste des étapes à exécuter dans ce job
-  steps:
-    # Première étape : afficher un message
-    - name: Etape 1
-      run: echo "Bonjour classe ICT324 !"
+    steps:
+      # Première étape : afficher un message
+      - name: Etape 1
+        run: echo "Bonjour classe ICT324 !"
     
-    # Deuxième étape : afficher un autre message
-    - name: Etape 2
-      run: echo "Ceci est mon premier workflow automatisé."
-    - name: Etape 3
+      # Deuxième étape : afficher un autre message
+      - name: Etape 2
+        run: echo "Ceci est mon premier workflow automatisé."
