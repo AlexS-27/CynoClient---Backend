@@ -1,0 +1,18 @@
+name: lecture de fichier
+on:
+  push:
+    branches: [feature/gitActions]
+
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    steps:
+      #Etape indispensable pour accèder a vos fichier
+      - name: Récupération du code
+        uses: actions/checkout@v3
+
+      - name: Afficher le contenu du dossier
+        run: ls -la
+
+      - name: Lire le message
+        run: cat messsage.txt
