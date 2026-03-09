@@ -1,9 +1,11 @@
 # Nom du workflow (apparaîtra dans l'onglet Actions de GitHub)
-name: Premier Workflow
+name: Second Workflow
 
 # Déclencheur : quand exécuter ce workflow ?
 # [push] signifie "à chaque push sur n'importe quelle branche"
-on: [push]
+on:
+  push:
+    branches: [feature/gitActions]
 
 # Un workflow contient un ou plusieurs "jobs" (tâches)
 jobs:
@@ -22,4 +24,6 @@ jobs:
       # Deuxième étape : afficher un autre message
       - name: Etape 2
         run: echo "Ceci est mon premier workflow automatisé."
+
       - name: Etape 3
+        run: echo "Fin du workflow avec succès."
