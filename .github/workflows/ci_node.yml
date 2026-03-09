@@ -22,6 +22,9 @@ jobs:
       - name: Installer les dépendances
         run: npm ci
 
+      - name: Régler les vulnérabilité
+        run: npm audit fix
+
       - name: Lancer les tests
         run: echo "Running tests..."
 
